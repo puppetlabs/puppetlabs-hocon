@@ -1,5 +1,9 @@
-require 'hocon/config_factory'
-require 'hocon/config_value_factory'
+require 'puppet/util/feature'
+if Puppet.features.hocon?
+  require 'hocon/config_factory'
+  require 'hocon/config_value_factory'
+end
+
 require File.expand_path('../../../util/config_saver', __FILE__)
 
 Puppet::Type.type(:conf_setting).provide(:ruby) do
