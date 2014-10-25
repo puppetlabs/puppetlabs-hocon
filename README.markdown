@@ -89,3 +89,4 @@ You can read the complete module contribution guide on the [Puppet Labs wiki](ht
 
 The list of contributors can be found at: [https://github.com/puppetlabs/puppetlabs-conffile/graphs/contributors/contributors](https://github.com/puppetlabs/puppetlabs-conffile/graphs/contributors/contributors).
 
+
