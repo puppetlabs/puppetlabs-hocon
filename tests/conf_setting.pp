@@ -16,7 +16,6 @@ conf_setting { 'sample setting2':
 conf_setting { 'sample setting3':
   ensure  => absent,
   path    => '/tmp/foo.conf',
-  section => 'bar',
   setting => 'bar.bazsetting',
   require => Conf_setting['sample setting2'],
 }
