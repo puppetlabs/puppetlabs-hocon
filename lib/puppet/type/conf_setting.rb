@@ -14,7 +14,7 @@ Puppet::Type.newtype(:conf_setting) do
   end
 
   newparam(:path) do
-    desc 'The ini file Puppet will ensure contains the specified setting.'
+    desc 'The file Puppet will ensure contains the specified setting.'
     validate do |value|
       unless (Puppet.features.posix? and value =~ /^\//) or (Puppet.features.microsoft_windows? and (value =~ /^.:\// or value =~ /^\/\/[^\/]+\/[^\/]+/))
         raise(Puppet::Error, "File paths must be fully qualified, not '#{value}'")
