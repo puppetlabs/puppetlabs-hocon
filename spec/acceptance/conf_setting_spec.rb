@@ -2,7 +2,7 @@ require 'spec_helper_acceptance'
 
 tmpdir = default.tmpdir('tmp')
 
-describe 'conf_setting resource' do
+describe 'hocon_setting resource' do
   after :all do
     shell("rm #{tmpdir}/*.conf", :acceptable_exit_codes => [0,1,2])
   end
@@ -51,15 +51,15 @@ describe 'conf_setting resource' do
   describe 'ensure parameter' do
     context '=> present for top-level and nested' do
       pp = <<-EOS
-      conf_setting { 'ensure => present for section':
+      hocon_setting { 'ensure => present for section':
         ensure  => present,
-        path    => "#{tmpdir}/conf_setting.conf",
+        path    => "#{tmpdir}/hocon_setting.conf",
         setting => 'one.two',
         value   => 'three',
       }
-      conf_setting { 'ensure => present for top level':
+      hocon_setting { 'ensure => present for top level':
         ensure  => present,
-        path    => "#{tmpdir}/conf_setting.conf",
+        path    => "#{tmpdir}/hocon_setting.conf",
         setting => 'four',
         value   => 'five',
       }
@@ -70,7 +70,7 @@ describe 'conf_setting resource' do
         apply_manifest(pp, :catch_changes => true)
       end
 
-      describe file("#{tmpdir}/conf_setting.conf") do
+      describe file("#{tmpdir}/hocon_setting.conf") do
         it { should be_file }
         #XXX Solaris 10 doesn't support multi-line grep
         it("should contain one {\n    two=three\n}\nfour=five", :unless => fact('osfamily') == 'Solaris') {
@@ -82,16 +82,16 @@ describe 'conf_setting resource' do
     context '=> absent for key/value' do
       before :all do
         if fact('osfamily') == 'Darwin'
-          shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/conf_setting.conf")
+          shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         else
-          shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/conf_setting.conf")
+          shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         end
       end
 
       pp = <<-EOS
-      conf_setting { 'ensure => absent for key/value':
+      hocon_setting { 'ensure => absent for key/value':
         ensure  => absent,
-        path    => "#{tmpdir}/conf_setting.conf",
+        path    => "#{tmpdir}/hocon_setting.conf",
         setting => 'one.two',
         value   => 'three',
       }
@@ -102,7 +102,7 @@ describe 'conf_setting resource' do
         apply_manifest(pp, :catch_changes  => true)
       end
 
-      describe file("#{tmpdir}/conf_setting.conf") do
+      describe file("#{tmpdir}/hocon_setting.conf") do
         it { should be_file }
         it { should contain('four=five') }
         it { should_not contain("two=three") }
@@ -112,20 +112,20 @@ describe 'conf_setting resource' do
     context '=> absent for top-level settings' do
       before :all do
         if fact('osfamily') == 'Darwin'
-          shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/conf_setting.conf")
+          shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         else
-          shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/conf_setting.conf")
+          shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         end
       end
       after :all do
-        shell("cat #{tmpdir}/conf_setting.conf", :acceptable_exit_codes => [0,1,2])
-        shell("rm #{tmpdir}/conf_setting.conf", :acceptable_exit_codes => [0,1,2])
+        shell("cat #{tmpdir}/hocon_setting.conf", :acceptable_exit_codes => [0,1,2])
+        shell("rm #{tmpdir}/hocon_setting.conf", :acceptable_exit_codes => [0,1,2])
       end
 
       pp = <<-EOS
-      conf_setting { 'ensure => absent for top-level':
+      hocon_setting { 'ensure => absent for top-level':
         ensure  => absent,
-        path    => "#{tmpdir}/conf_setting.conf",
+        path    => "#{tmpdir}/hocon_setting.conf",
         setting => 'four',
         value   => 'five',
       }
@@ -136,7 +136,7 @@ describe 'conf_setting resource' do
         apply_manifest(pp, :catch_changes  => true)
       end
 
-      describe file("#{tmpdir}/conf_setting.conf") do
+      describe file("#{tmpdir}/hocon_setting.conf") do
         it { should be_file }
         it { should_not contain('four=five') }
         it { should contain("one {\n    two=three\n}") }
@@ -152,14 +152,14 @@ describe 'conf_setting resource' do
     }.each do |parameter_list, content|
       context parameter_list do
         pp = <<-EOS
-        conf_setting { "#{parameter_list}":
+        hocon_setting { "#{parameter_list}":
           ensure  => present,
-          path    => "#{tmpdir}/conf_setting.conf",
+          path    => "#{tmpdir}/hocon_setting.conf",
           #{parameter_list}
         }
         EOS
 
-        it_behaves_like 'has_content', "#{tmpdir}/conf_setting.conf", pp, content
+        it_behaves_like 'has_content', "#{tmpdir}/hocon_setting.conf", pp, content
       end
     end
 
@@ -170,14 +170,14 @@ describe 'conf_setting resource' do
     }.each do |parameter_list, error|
       context parameter_list, :pending => 'no error checking yet' do
         pp = <<-EOS
-        conf_setting { "#{parameter_list}":
+        hocon_setting { "#{parameter_list}":
           ensure  => present,
-          path    => "#{tmpdir}/conf_setting.conf",
+          path    => "#{tmpdir}/hocon_setting.conf",
           #{parameter_list}
         }
         EOS
 
-        it_behaves_like 'has_error', "#{tmpdir}/conf_setting.conf", pp, error
+        it_behaves_like 'has_error', "#{tmpdir}/hocon_setting.conf", pp, error
       end
     end
   end
@@ -190,7 +190,7 @@ describe 'conf_setting resource' do
     ].each do |path|
       context "path => #{path}" do
         pp = <<-EOS
-        conf_setting { 'path => #{path}':
+        hocon_setting { 'path => #{path}':
           ensure  => present,
           setting => 'one.two',
           value   => 'three',
@@ -204,7 +204,7 @@ describe 'conf_setting resource' do
 
     context "path => foo" do
       pp = <<-EOS
-        conf_setting { 'path => foo':
+        hocon_setting { 'path => foo':
           ensure     => present,
           setting    => 'one.two',
           value      => 'three',

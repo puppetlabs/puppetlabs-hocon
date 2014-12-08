@@ -1,4 +1,4 @@
-Puppet::Type.newtype(:conf_setting) do
+Puppet::Type.newtype(:hocon_setting) do
 
   ensurable do
     defaultvalues

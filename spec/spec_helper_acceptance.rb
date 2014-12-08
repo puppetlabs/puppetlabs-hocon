@@ -29,7 +29,7 @@ RSpec.configure do |c|
     # Install module and dependencies
     hosts.each do |host|
       if host['platform'] !~ /windows/i
-        copy_root_module_to(host, :source => proj_root, :module_name => 'conffile')
+        copy_root_module_to(host, :source => proj_root, :module_name => 'hocon')
       end
     end
     hosts.each do |host|

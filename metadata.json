@@ -1,11 +1,11 @@
 {
-    "name": "puppetlabs-conffile",
+    "name": "puppetlabs-hocon",
     "version": "0.1.1",
-    "source": "https://github.com/puppetlabs/puppetlabs-conffile",
+    "source": "https://github.com/puppetlabs/puppetlabs-hocon",
     "author": "Puppet Labs",
     "license": "Apache-2.0",
-    "project_page": "https://github.com/puppetlabs/puppetlabs-conffile",
-    "summary": "Resource types for managing settings in CONF files",
+    "project_page": "https://github.com/puppetlabs/puppetlabs-hocon",
+    "summary": "Resource types for managing settings in HOCON files",
     "operatingsystem_support": [
       {
         "operatingsystem": "CentOS",
