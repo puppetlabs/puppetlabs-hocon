@@ -6,7 +6,7 @@ end
 
 require File.expand_path('../../../util/config_saver', __FILE__)
 
-Puppet::Type.type(:conf_setting).provide(:ruby) do
+Puppet::Type.type(:hocon_setting).provide(:ruby) do
   def self.namevar(section_name, setting)
     "#{setting}"
   end

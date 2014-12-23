@@ -1,15 +1,15 @@
 require 'spec_helper'
 require 'puppet'
 
-provider_class = Puppet::Type.type(:conf_setting).provider(:ruby)
+provider_class = Puppet::Type.type(:hocon_setting).provider(:ruby)
 describe provider_class do
   include PuppetlabsSpec::Files
 
-  let(:tmpfile) { tmpfilename("conf_setting_test.conf") }
-  let(:emptyfile) { tmpfilename("conf_setting_test_empty.conf") }
+  let(:tmpfile) { tmpfilename("hocon_setting_test.conf") }
+  let(:emptyfile) { tmpfilename("hocon_setting_test_empty.conf") }
 
   let(:common_params) { {
-      :title    => 'conf_setting_ensure_present_test',
+      :title    => 'hocon_setting_ensure_present_test',
       :path     => tmpfile,
   } }
 
@@ -57,7 +57,7 @@ foo: bar
     }
 
     it "should add a missing setting to the correct map" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_1.yahoo', :value => 'yippee'))
       provider = described_class.new(resource)
       provider.exists?.should be false
@@ -87,7 +87,7 @@ foo=bar
     end
 
     it "should modify an existing setting with a different value" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.baz', :value => 'bazvalue2'))
       provider = described_class.new(resource)
       provider.exists?.should be true
@@ -116,7 +116,7 @@ foo=bar
     end
 
     it "should be able to handle settings with non alphanumbering settings " do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.url', :value => 'http://192.168.0.1:8080'))
       provider = described_class.new(resource)
       provider.exists?.should be true
@@ -147,14 +147,14 @@ foo=bar
     end
 
     it "should recognize an existing setting with the specified value" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.baz', :value => 'bazvalue'))
       provider = described_class.new(resource)
       provider.exists?.should be true
     end
 
     it "should add a new map if the path contains a non-existent map" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_4.huzzah', :value => 'shazaam'))
       provider = described_class.new(resource)
       provider.exists?.should be false
@@ -186,7 +186,7 @@ foo=bar
     end
 
     it "should add a new map if no maps exists" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_1.setting1', :value => 'hellowworld', :path => emptyfile))
       provider = described_class.new(resource)
       provider.exists?.should be false
@@ -199,7 +199,7 @@ foo=bar
     end
 
     it "should be able to handle variables of any type" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_1.master', :value => true))
       provider = described_class.new(resource)
       provider.exists?.should be true
@@ -222,7 +222,7 @@ foo=blah
 
 
     it "should add a missing setting if it doesn't exist" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'bar', :value => 'yippee'))
       provider = described_class.new(resource)
       provider.exists?.should be false
@@ -241,7 +241,7 @@ bar=yippee
 
     # TODO: Investigate removal of comment
     it "should modify an existing setting with a different value" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'yippee'))
       provider = described_class.new(resource)
       provider.exists?.should be true
@@ -258,7 +258,7 @@ foo=yippee
     end
 
     it "should recognize an existing setting with the specified value" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'blah'))
       provider = described_class.new(resource)
       provider.exists?.should be true
@@ -275,7 +275,7 @@ foo=yippee
     }
 
     it "should be able to add a setting to the top-level map" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'yippee'))
       provider = described_class.new(resource)
       provider.exists?.should be false
@@ -311,7 +311,7 @@ EOS
     }
 
     it "should remove a setting that exists" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
       :setting => 'test_key_1.foo', :ensure => 'absent'))
       provider = described_class.new(resource)
       provider.exists?.should be true
@@ -334,7 +334,7 @@ EOS
     end
 
     it "should do nothing for a setting that does not exist" do
-      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    :setting => 'test_key_3.foo', :ensure => 'absent'))
       provider = described_class.new(resource)
       provider.exists?.should be false

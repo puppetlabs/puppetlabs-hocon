@@ -1,36 +1,36 @@
-#CONF file
+#HOCON file
 
 ####Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with conffile module](#setup)
+3. [Setup - The basics of getting started with the hocon module](#setup)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with conffile](#beginning-with-conffile)
+    * [Beginning with hocon](#beginning-with-hocon)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 6. [Development - Guide for contributing to the module](#development)
 
 ##Overview 
 
-This module adds resource types to manage settings in CONF-style configuration files.
+This module adds resource types to manage settings in HOCON-style configuration files.
 
 ##Module Description
 
-The conffile module adds a resource type so that you can use Puppet to manage settings in HOCON configuration files.
+The hocon module adds a resource type so that you can use Puppet to manage settings in HOCON configuration files.
 
 ##Setup
 
-##Beginning with conffile
+##Beginning with hocon
 
-To manage a conf file, add the resource type `conf_setting` to a class.
+To manage a HOCON file, add the resource type `hocon_setting` to a class.
 
 ##Usage
 
-Manage individual settings in CONF files by adding the `conf_setting` resource type to a class. For example:
+Manage individual settings in HOCON files by adding the `hocon_setting` resource type to a class. For example:
 
 ```
-conf_setting { "sample setting":
+hocon_setting { "sample setting":
   ensure  => present,
   path    => '/tmp/foo.conf',
   setting => 'foosetting',
@@ -48,7 +48,7 @@ foo {
     }
 }
 
-conf_setting {'sample nested setting':
+hocon_setting {'sample nested setting':
   ensure  => present,
   path => '/tmp/foo.conf',
   setting => 'foo.bar.barsetting',
@@ -58,7 +58,7 @@ conf_setting {'sample nested setting':
 
 ##Reference
 
-###Type: conf_setting
+###Type: hocon_setting
 
 #### Parameters
 
@@ -66,16 +66,16 @@ conf_setting {'sample nested setting':
 
 * `name`: An arbitrary name used as the identity of the resource.
 
-* `path`: The CONF file in which Puppet will ensure the specified setting.
+* `path`: The HOCON file in which Puppet will ensure the specified setting.
 
-* `provider`: The specific backend to use for this `conf_setting` resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform. The only available provider for `conf_setting` is ruby.
+* `provider`: The specific backend to use for this `hocon_setting` resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform. The only available provider for `hocon_setting` is ruby.
 
-* `setting`: The name of the CONF file setting to be defined. This can be a top-level setting or a setting nested
+* `setting`: The name of the HOCON file setting to be defined. This can be a top-level setting or a setting nested
   within another setting. To define a nested setting, give the full path to that setting with each level separated
   by a `.` So, to define a setting `foosetting` nested within a setting called `foo` contained on the top level,
   the `setting` parameter would be set to `foo.foosetting`.
 
-* `value`: The value of the CONF file setting to be defined.
+* `value`: The value of the HOCON file setting to be defined.
 
 ##Development
  
@@ -87,4 +87,4 @@ You can read the complete module contribution guide on the [Puppet Labs wiki](ht
 
 ##Contributors
 
-The list of contributors can be found at: [https://github.com/puppetlabs/puppetlabs-conffile/graphs/contributors/contributors](https://github.com/puppetlabs/puppetlabs-conffile/graphs/contributors/contributors).
+The list of contributors can be found at: [https://github.com/puppetlabs/puppetlabs-hocon/graphs/contributors/contributors](https://github.com/puppetlabs/puppetlabs-hocon/graphs/contributors/contributors).
