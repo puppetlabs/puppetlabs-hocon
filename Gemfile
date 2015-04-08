@@ -2,7 +2,7 @@ source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
 group :development, :test do
   gem 'rake',                    :require => false
-  gem 'rspec', '~> 2.11',        :require => false
+  gem 'rspec',                   :require => false
   gem 'rspec-puppet',            :require => false
   gem 'puppetlabs_spec_helper',  :require => false
   gem 'serverspec',              :require => false
@@ -25,6 +25,6 @@ else
   gem 'puppet', :require => false
 end
 
-gem 'hocon', '~> 0.0.6',       :require => false
+gem 'hocon', '~> 0.1.0',       :require => false
 
 # vim:ft=ruby

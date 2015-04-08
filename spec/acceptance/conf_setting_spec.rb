@@ -148,7 +148,7 @@ describe 'hocon_setting resource' do
     {
       "setting => 'test.foo', value => 'bar',"   => "test {\n    foo = bar\n}",
       "setting => 'more.baz', value => 'quux',"  => "more {\n    baz = quux\n}",
-      "setting => 'top', value => 'level',"      => "top=level",
+      "setting => 'top', value => 'level',"      => "top : \"level\"",
     }.each do |parameter_list, content|
       context parameter_list do
         pp = <<-EOS
