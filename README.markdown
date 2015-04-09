@@ -77,6 +77,19 @@ hocon_setting {'sample nested setting':
 
 * `value`: The value of the HOCON file setting to be defined.
 
+* `type`: The type of the value passed into the `value` parameter. This parameter will not be need to be set most of the time, as the module
+    is generally smart enough to figure this out on its own. There are only two cases in which this must be set.
+    
+    The first is the case in which the `value` type is a single-element array. In that case, the `type` parameter will need to be set to
+    `'array'`.
+    
+    Since this type represents a setting in a configuration file, you can pass a string containing the exact text of the value as you want it to appear
+    in the file (this is useful, for example, if you want to set a parameter to a map or an array but want comments or specific indentation on elements in the map/array).
+    In this case, `value` must be a string with no leading or trailing whitespace, newlines, or comments that contains a valid HOCON value, and the
+    `type` parameter must be set to `'text'`. This is an advanced use case, and will not be necessary for most users.
+    
+    Aside from these two cases, the `type` parameter does not need to be set.
+
 ##Development
  
 Puppet Labs modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can’t access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.

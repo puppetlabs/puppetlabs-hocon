@@ -17,8 +17,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def create
-    value = Hocon::ConfigValueFactory.from_any_ref(resource[:value], nil)
-    conf_file_modified = conf_file.set_config_value(setting, value)
+    conf_file_modified = set_value(resource[:value])
     Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
     @conf_file = nil
   end
@@ -34,8 +33,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def value=(value)
-    value = Hocon::ConfigValueFactory.from_any_ref(resource[:value], nil)
-    conf_file_modified = conf_file.set_config_value(setting, value)
+    conf_file_modified = set_value(value)
     Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
     @conf_file = nil
   end
@@ -61,6 +59,24 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
       File.new(file_path, "w")
     end
     Hocon::ConfigFactory.parse_file(file_path)
+  end
+
+  def set_value(value)
+    if resource[:type] == 'array' || (value.is_a?(String) && resource[:type] != 'text')
+      value = Hocon::ConfigValueFactory.from_any_ref(value, nil)
+    elsif resource[:type] == 'text'
+      value = value[0]
+    else
+      value = Hocon::ConfigValueFactory.from_any_ref(value[0], nil)
+    end
+
+    if resource[:type] == 'text'
+      conf_file_modified = conf_file.set_value(setting, value)
+    else
+      conf_file_modified = conf_file.set_config_value(setting, value)
+    end
+
+    conf_file_modified
   end
 
 end

@@ -212,14 +212,106 @@ test_key_4 : { huzzah : "shazaam" }
       validate_file(" test_key_1 : { setting1 : \"helloworld\" }\n", emptyfile)
     end
 
-    it "should be able to handle variables of any type" do
+    it "should be able to handle variables of boolean type" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
-          :setting => 'test_key_1.master', :value => true))
+          :setting => 'test_key_1.master', :value => false))
       provider = described_class.new(resource)
+      provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(true)
+      expect(provider.value).to eql(false)
     end
 
+    it "should be able to handle variables of integer type" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => 12))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(12)
+    end
+
+    it "should be able to handle variables of float type" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => 12.24))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(12.24)
+    end
+
+    it "should be able to handle arrays" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => [1, 2, 3, 4]))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql([1, 2, 3, 4])
+    end
+
+    it "should be able to handle maps" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => {"a" => 1, "b" => 2}))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql({"a" => 1, "b" => 2})
+    end
+
+    it "should treat a single-element array as a single value if no value type is specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => [12]))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(12)
+    end
+
+    it "should treat a single-element array as a single-element array if value_type is specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => [12], :type => 'array'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql([12])
+    end
+
+    it "should allow setting the exact text of a value in the file" do
+      text = "{\n  # a comment\n  a : b\n}"
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => text, :type => 'text'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      validate_file(
+          <<-EOS
+# This is a comment
+test_key_1: {
+// This is also a comment
+  foo: foovalue
+
+  bar: barvalue
+  master: {
+    # a comment
+    a : b
+  }
+}
+
+test_key_2: {
+
+  foo: foovalue2
+  baz: bazvalue
+  url: "http://192.168.1.1:8080"
+}
+
+"test_key:3": {
+  foo: bar
+}
+    #another comment
+// yet another comment
+foo: bar
+      EOS
+      )
+    end
   end
 
   context "when dealing with settings in the top level" do
