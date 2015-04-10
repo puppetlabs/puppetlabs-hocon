@@ -15,7 +15,7 @@ describe provider_class do
 
   def validate_file(expected_content,tmpfile = tmpfile)
     tmpcontent = File.read(tmpfile)
-    File.read(tmpfile).should == expected_content
+    expect(File.read(tmpfile)).to eq(expected_content)
   end
 
 
@@ -60,28 +60,33 @@ foo: bar
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_1.yahoo', :value => 'yippee'))
       provider = described_class.new(resource)
-      provider.exists?.should be false
+      expect(provider.exists?).to be false
       provider.create
-      validate_file(<<-EOS
+      validate_file(
+          <<-EOS
 # This is a comment
-"test_key_1" {
-    # This is also a comment
-    foo=foovalue
-    bar=barvalue
-    master=true
-    yahoo=yippee
+test_key_1: {
+// This is also a comment
+  foo: foovalue
+
+  bar: barvalue
+  master: true
+  yahoo : "yippee"
 }
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue
-    url="http://192.168.1.1:8080"
+
+test_key_2: {
+
+  foo: foovalue2
+  baz: bazvalue
+  url: "http://192.168.1.1:8080"
 }
-"test_key:3" {
-    foo=bar
+
+"test_key:3": {
+  foo: bar
 }
-# another comment
-# yet another comment
-foo=bar
+    #another comment
+// yet another comment
+foo: bar
       EOS
 )
     end
@@ -90,27 +95,32 @@ foo=bar
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.baz', :value => 'bazvalue2'))
       provider = described_class.new(resource)
-      provider.exists?.should be true
+      expect(provider.exists?).to be true
       provider.value=('bazvalue2')
-      validate_file(<<-EOS
+      validate_file(
+          <<-EOS
 # This is a comment
-"test_key_1" {
-    # This is also a comment
-    foo=foovalue
-    bar=barvalue
-    master=true
+test_key_1: {
+// This is also a comment
+  foo: foovalue
+
+  bar: barvalue
+  master: true
 }
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue2
-    url="http://192.168.1.1:8080"
+
+test_key_2: {
+
+  foo: foovalue2
+  baz: "bazvalue2"
+  url: "http://192.168.1.1:8080"
 }
-"test_key:3" {
-    foo=bar
+
+"test_key:3": {
+  foo: bar
 }
-# another comment
-# yet another comment
-foo=bar
+    #another comment
+// yet another comment
+foo: bar
       EOS
       )
     end
@@ -119,29 +129,34 @@ foo=bar
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.url', :value => 'http://192.168.0.1:8080'))
       provider = described_class.new(resource)
-      provider.exists?.should be true
-      provider.value.should == 'http://192.168.1.1:8080'
+      expect(provider.exists?).to be true
+      expect(provider.value).to eq('http://192.168.1.1:8080')
       provider.value=('http://192.168.0.1:8080')
 
-      validate_file(<<-EOS
+      validate_file(
+          <<-EOS
 # This is a comment
-"test_key_1" {
-    # This is also a comment
-    foo=foovalue
-    bar=barvalue
-    master=true
+test_key_1: {
+// This is also a comment
+  foo: foovalue
+
+  bar: barvalue
+  master: true
 }
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue
-    url="http://192.168.0.1:8080"
+
+test_key_2: {
+
+  foo: foovalue2
+  baz: bazvalue
+  url: "http://192.168.0.1:8080"
 }
-"test_key:3" {
-    foo=bar
+
+"test_key:3": {
+  foo: bar
 }
-# another comment
-# yet another comment
-foo=bar
+    #another comment
+// yet another comment
+foo: bar
       EOS
       )
     end
@@ -150,60 +165,59 @@ foo=bar
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.baz', :value => 'bazvalue'))
       provider = described_class.new(resource)
-      provider.exists?.should be true
+      expect(provider.exists?).to be true
     end
 
     it "should add a new map if the path contains a non-existent map" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_4.huzzah', :value => 'shazaam'))
       provider = described_class.new(resource)
-      provider.exists?.should be false
+      expect(provider.exists?).to be false
       provider.create
-      validate_file(<<-EOS
+      validate_file(
+          <<-EOS
 # This is a comment
-"test_key_1" {
-    # This is also a comment
-    foo=foovalue
-    bar=barvalue
-    master=true
+test_key_1: {
+// This is also a comment
+  foo: foovalue
+
+  bar: barvalue
+  master: true
 }
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue
-    url="http://192.168.1.1:8080"
+
+test_key_2: {
+
+  foo: foovalue2
+  baz: bazvalue
+  url: "http://192.168.1.1:8080"
 }
-"test_key:3" {
-    foo=bar
+
+"test_key:3": {
+  foo: bar
 }
-# another comment
-# yet another comment
-foo=bar
-"test_key_4" {
-    huzzah=shazaam
-}
+    #another comment
+// yet another comment
+foo: bar
+test_key_4 : { huzzah : "shazaam" }
       EOS
       )
     end
 
     it "should add a new map if no maps exists" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
-          :setting => 'test_key_1.setting1', :value => 'hellowworld', :path => emptyfile))
+          :setting => 'test_key_1.setting1', :value => 'helloworld', :path => emptyfile))
       provider = described_class.new(resource)
-      provider.exists?.should be false
+      expect(provider.exists?).to be false
       provider.create
-      validate_file(
-"\"test_key_1\" {
-    setting1=hellowworld
-}
-", emptyfile)
+      validate_file(" test_key_1 : { setting1 : \"helloworld\" }\n", emptyfile)
     end
 
     it "should be able to handle variables of any type" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'test_key_1.master', :value => true))
       provider = described_class.new(resource)
-      provider.exists?.should be true
-      provider.value.should eql(true)
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(true)
     end
 
   end
@@ -225,7 +239,7 @@ foo=blah
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
           :setting => 'bar', :value => 'yippee'))
       provider = described_class.new(resource)
-      provider.exists?.should be false
+      expect(provider.exists?).to be false
       provider.create
       validate_file(<<-EOS
 # This is a comment
@@ -234,7 +248,7 @@ foo=blah
     # yet another comment
     foo="http://192.168.1.1:8080"
 }
-bar=yippee
+bar : "yippee"
       EOS
       )
     end
@@ -244,11 +258,12 @@ bar=yippee
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'yippee'))
       provider = described_class.new(resource)
-      provider.exists?.should be true
-      provider.value.should == 'blah'
+      expect(provider.exists?).to be true
+      expect(provider.value).to eq('blah')
       provider.value=('yippee')
       validate_file(<<-EOS
-foo=yippee
+# This is a comment
+foo="yippee"
 "test_key_1" {
     # yet another comment
     foo="http://192.168.1.1:8080"
@@ -261,7 +276,7 @@ foo=yippee
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'blah'))
       provider = described_class.new(resource)
-      provider.exists?.should be true
+      expect(provider.exists?).to be true
     end
   end
 
@@ -278,13 +293,13 @@ foo=yippee
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'yippee'))
       provider = described_class.new(resource)
-      provider.exists?.should be false
+      expect(provider.exists?).to be false
       provider.create
       validate_file(<<-EOS
 "test_key_2" {
     foo="http://192.168.1.1:8080"
 }
-foo=yippee
+foo : "yippee"
       EOS
       )
     end
@@ -314,10 +329,12 @@ EOS
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
       :setting => 'test_key_1.foo', :ensure => 'absent'))
       provider = described_class.new(resource)
-      provider.exists?.should be true
+      expect(provider.exists?).to be true
       provider.destroy
       validate_file(<<-EOS
 "test_key_1" {
+    # This is also a comment
+    
     bar=barvalue
     master=true
 }
@@ -337,7 +354,7 @@ EOS
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    :setting => 'test_key_3.foo', :ensure => 'absent'))
       provider = described_class.new(resource)
-      provider.exists?.should be false
+      expect(provider.exists?).to be false
       provider.destroy
       validate_file(<<-EOS
 "test_key_1" {

@@ -6,7 +6,7 @@ module Puppet
     class ConfigSaver
       def self.save(path, conf)
         File.open(path, 'w+') do |fh|
-          config_string = conf.root.render(Hocon::ConfigRenderOptions.new(false, true, true, false))
+          config_string = conf.render
           fh.puts(config_string)
         end
       end
