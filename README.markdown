@@ -39,7 +39,7 @@ hocon_setting { "sample setting":
 ```
 
 To control a setting nested within a map contained at another setting, provide the path to that setting
-under the "setting" parameter, with each level separated by a ".".
+under the "setting" parameter, with each level separated by a ".". So to manage `barsetting` in the following map
 
 ```
 foo {
@@ -47,12 +47,27 @@ foo {
         barsetting="FOO!"
     }
 }
+```
 
+You would put the following in your manifest:
+
+```
 hocon_setting {'sample nested setting':
   ensure  => present,
   path => '/tmp/foo.conf',
   setting => 'foo.bar.barsetting',
   value   => 'BAR!',
+}
+```
+
+You can also set maps like so:
+
+```
+hocon_setting { 'sample map setting':
+  ensure => present,
+  path => '/tmp/foo.conf',
+  setting => 'hash_setting',
+  value => { 'a' => 'b' },
 }
 ```
 
@@ -77,16 +92,76 @@ hocon_setting {'sample nested setting':
 
 * `value`: The value of the HOCON file setting to be defined.
 
-* `type`: The type of the value passed into the `value` parameter. This parameter will not be need to be set most of the time, as the module
-    is generally smart enough to figure this out on its own. There are only two cases in which this must be set.
+* `type`: The type of the value passed into the `value` parameter. This value should be a string, with valid values being
+    `'number'`, `'boolean'`, `'string'`, `'hash'`, `'array'`, and `'text'`.
+    
+    This parameter will not be need to be set most of the time, as the module
+    is generally smart enough to figure this out on its own. There are only two cases in which this parameter is required.
     
     The first is the case in which the `value` type is a single-element array. In that case, the `type` parameter will need to be set to
-    `'array'`.
+    `'array'`. So, for example, to add a single-element array, you would add the following to your manifest
+    
+    ```
+    hocon_setting { 'single array setting':
+      ensure => present,
+      path => '/tmp/foo.conf',
+      setting => 'foo',
+      value => [1],
+      type => 'array',
+    }
+    ```
     
     Since this type represents a setting in a configuration file, you can pass a string containing the exact text of the value as you want it to appear
     in the file (this is useful, for example, if you want to set a parameter to a map or an array but want comments or specific indentation on elements in the map/array).
     In this case, `value` must be a string with no leading or trailing whitespace, newlines, or comments that contains a valid HOCON value, and the
-    `type` parameter must be set to `'text'`. This is an advanced use case, and will not be necessary for most users.
+    `type` parameter must be set to `'text'`. This is an advanced use case, and will not be necessary for most users. So, for example, say you want to
+    add a map with particular indentation/comments into your configuration file at path `foo.bar`. You could create a variable like so
+    
+    ```
+    $map = 
+    "{
+        # This is setting a
+        a : b
+        # This is setting c
+            c : d
+     }"
+    ```
+    
+    And your configuration file looks like so
+    
+    ```
+    baz : qux
+    foo {
+      a : b
+    }
+    ```
+    
+    You could then write the following in your manifest
+    
+    ```
+    hocon_setting { 'exact text setting':
+      ensure => present,
+      path => '/tmp/foo.conf',
+      setting => 'foo.bar',
+      value => $map,
+      type => 'text',
+    }
+    ```
+    
+    And the resulting configuration file would look like so
+    
+    ```
+    baz : qux
+    foo {
+      a : b
+      bar : {
+          # This is setting a
+          a : b
+          # This is setting c
+              c : d
+      }
+    }
+    ```
     
     Aside from these two cases, the `type` parameter does not need to be set.
 

@@ -32,27 +32,34 @@ Puppet::Type.newtype(:hocon_setting) do
     desc 'The value of the setting to be defined.'
 
     validate do |val|
+      # Grab the value we are going to validate
+      value = @shouldorig.is_a?(Array) && (@shouldorig.size > 1 || @resource[:type] == 'array') ? @shouldorig : @shouldorig[0]
       case @resource[:type]
+        when 'boolean'
+          if value != true && value != false
+            raise "Type specified as 'boolean' but was #{value.class}"
+          end
+        when 'string', 'text'
+          unless value.is_a?(String)
+            raise "Type specified as #{@resource[:type]} but was #{value.class}"
+          end
+        when 'number'
+          unless value.is_a?(Numeric)
+            raise "Type specified as 'number' but was #{value.class}"
+          end
+        when 'array'
+          unless value.is_a?(Array)
+            raise "Type specified as 'array' but was #{value.class}"
+          end
+        when 'hash'
+          unless value.is_a?(Hash)
+            raise "Type specified as 'hash' but was #{value.class}"
+          end
         when nil
-          if @shouldorig.is_a?(Array) and @shouldorig.size > 1
-            @resource[:type] = 'array'
-          else
-            case val.class.to_s.downcase.to_sym
-              when :trueclass, :falseclass
-                @resource[:type] = 'boolean'
-              else
-                @resource[:type] = 'string'
-            end
-          end
-        when 'hash', 'array', 'text'
-          # we're just leaving these values alone
+          # Do nothing, we'll figure it out on our own
         else
-          if @shouldorig.is_a?(Array) and @shouldorig.size > 1
-            raise "Array provided, but type specified as #{@resource[:type]}"
-          end
+          raise "Type was specified as #{@resource[:type]}, but should have been one of 'boolean', 'string', 'text', 'number', 'array', or 'hash'"
       end
     end
   end
-
-
 end

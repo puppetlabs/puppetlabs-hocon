@@ -62,7 +62,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def set_value(value)
-    if resource[:type] == 'array' || (value.is_a?(String) && resource[:type] != 'text')
+    if resource[:type] == 'array' || (value.is_a?(String) && resource[:type] != 'text') || (value.is_a?(Array) && value.size > 1)
       value = Hocon::ConfigValueFactory.from_any_ref(value, nil)
     elsif resource[:type] == 'text'
       value = value[0]

@@ -467,4 +467,82 @@ EOS
       )
     end
   end
+
+  context "when validating a value type" do
+    let(:orig_content) { "" }
+    it "should throw when type is 'number' but value is not" do
+      expect {Puppet::Type::Hocon_setting.new(common_params.merge(
+                                        :setting => 'foo', :type => 'number', :value => "abcdefg"))}.to raise_error
+    end
+
+    it "should throw when type is 'boolean' but value is not" do
+      expect {Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                  :setting => 'foo', :type => 'boolean', :value => "abcdefg"))}.to raise_error
+    end
+
+    it "should throw when type is 'hash' but value is not" do
+      expect {Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                  :setting => 'foo', :type => 'hash', :value => "abcdefg"))}.to raise_error
+    end
+
+    it "should throw when type is 'string' but value is not" do
+      expect {Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                  :setting => 'foo', :type => 'string', :value => 12))}.to raise_error
+    end
+
+    it "should throw when type is 'text' but value is not" do
+      expect {Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                  :setting => 'foo', :type => 'text', :value => 12))}.to raise_error
+    end
+
+    it "should throw when type is a non-valid string" do
+      expect {Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                  :setting => 'foo', :type => 'invalid', :value => "abcdefg"))}.to raise_error
+    end
+
+    it "should be able to handle value false with boolean type specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => false, :type => 'boolean'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(false)
+    end
+
+    it "should be able to handle value true with boolean type specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => true, :type => 'boolean'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(true)
+    end
+
+    it "should be able to handle number value with number type specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => 12, :type => 'number'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql(12)
+    end
+
+    it "should be able to handle string value with string type specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => "abc", :type => 'string'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql("abc")
+    end
+
+    it "should be able to handle hash value with hash type specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => {'a' => 'b'}, :type => 'hash'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value).to eql({'a' => 'b'})
+    end
+  end
 end
