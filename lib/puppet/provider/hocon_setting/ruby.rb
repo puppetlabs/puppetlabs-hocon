@@ -43,7 +43,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def file_path
-      resource[:path]
+    resource[:path]
   end
 
   private
@@ -78,5 +78,4 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
 
     conf_file_modified
   end
-
 end

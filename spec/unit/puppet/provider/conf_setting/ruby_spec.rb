@@ -345,7 +345,6 @@ bar : "yippee"
       )
     end
 
-    # TODO: Investigate removal of comment
     it "should modify an existing setting with a different value" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'foo', :value => 'yippee'))
