@@ -25,6 +25,6 @@ else
   gem 'puppet', :require => false
 end
 
-gem 'hocon', '~> 0.1.0',       :require => false
+gem 'hocon', '~> 0.9.0',       :require => false
 
 # vim:ft=ruby
