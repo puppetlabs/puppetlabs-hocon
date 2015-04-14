@@ -130,7 +130,7 @@ foo: bar
            :setting => 'test_key_2.url', :value => 'http://192.168.0.1:8080'))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
-      expect(provider.value).to eq('http://192.168.1.1:8080')
+      expect(provider.value).to eq(['http://192.168.1.1:8080'])
       provider.value=('http://192.168.0.1:8080')
 
       validate_file(
@@ -218,7 +218,7 @@ test_key_4 : { huzzah : "shazaam" }
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(false)
+      expect(provider.value[0]).to eql(false)
     end
 
     it "should be able to handle variables of integer type" do
@@ -227,7 +227,7 @@ test_key_4 : { huzzah : "shazaam" }
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(12)
+      expect(provider.value[0]).to eql(12)
     end
 
     it "should be able to handle variables of float type" do
@@ -236,7 +236,7 @@ test_key_4 : { huzzah : "shazaam" }
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(12.24)
+      expect(provider.value[0]).to eql(12.24)
     end
 
     it "should be able to handle arrays" do
@@ -254,7 +254,7 @@ test_key_4 : { huzzah : "shazaam" }
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql({"a" => 1, "b" => 2})
+      expect(provider.value[0]).to eql({"a" => 1, "b" => 2})
     end
 
     it "should treat a single-element array as a single value if no value type is specified" do
@@ -263,7 +263,7 @@ test_key_4 : { huzzah : "shazaam" }
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(12)
+      expect(provider.value[0]).to eql(12)
     end
 
     it "should treat a single-element array as a single-element array if value_type is specified" do
@@ -350,7 +350,7 @@ bar : "yippee"
            :setting => 'foo', :value => 'yippee'))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
-      expect(provider.value).to eq('blah')
+      expect(provider.value[0]).to eq('blah')
       provider.value=('yippee')
       validate_file(<<-EOS
 # This is a comment
@@ -505,7 +505,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(false)
+      expect(provider.value[0]).to eql(false)
     end
 
     it "should be able to handle value true with boolean type specified" do
@@ -514,7 +514,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(true)
+      expect(provider.value[0]).to eql(true)
     end
 
     it "should be able to handle number value with number type specified" do
@@ -523,7 +523,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql(12)
+      expect(provider.value[0]).to eql(12)
     end
 
     it "should be able to handle string value with string type specified" do
@@ -532,7 +532,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql("abc")
+      expect(provider.value[0]).to eql("abc")
     end
 
     it "should be able to handle hash value with hash type specified" do
@@ -541,7 +541,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value).to eql({'a' => 'b'})
+      expect(provider.value[0]).to eql({'a' => 'b'})
     end
   end
 end

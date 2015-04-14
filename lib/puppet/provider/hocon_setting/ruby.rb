@@ -29,11 +29,19 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def value
-    conf_object.get_value(setting).unwrapped
+    val = conf_object.get_value(setting).unwrapped
+
+    # This is required because of :array_matching => :all.
+    # Without this, Puppet will almost always register changes
+    # to a hocon_setting even when it shouldn't.
+    unless val.is_a?(Array)
+      val = [val]
+    end
+    val
   end
 
-  def value=(value)
-    conf_file_modified = set_value(value)
+  def value=(new_value)
+    conf_file_modified = set_value(new_value)
     Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
     @conf_file = nil
   end
@@ -61,21 +69,20 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     Hocon::ConfigFactory.parse_file(file_path)
   end
 
-  def set_value(value)
-    if resource[:type] == 'array' || (value.is_a?(String) && resource[:type] != 'text') || (value.is_a?(Array) && value.size > 1)
-      value = Hocon::ConfigValueFactory.from_any_ref(value, nil)
+  def set_value(value_to_set)
+    if resource[:type] == 'array' || (value_to_set.is_a?(String) && resource[:type] != 'text') || (value_to_set.is_a?(Array) && value_to_set.size > 1)
+      new_value = Hocon::ConfigValueFactory.from_any_ref(value_to_set, nil)
     elsif resource[:type] == 'text'
-      value = value[0]
+      new_value = value_to_set[0]
     else
-      value = Hocon::ConfigValueFactory.from_any_ref(value[0], nil)
+      new_value = Hocon::ConfigValueFactory.from_any_ref(value_to_set[0], nil)
     end
 
     if resource[:type] == 'text'
-      conf_file_modified = conf_file.set_value(setting, value)
+      conf_file_modified = conf_file.set_value(setting, new_value)
     else
-      conf_file_modified = conf_file.set_config_value(setting, value)
+      conf_file_modified = conf_file.set_config_value(setting, new_value)
     end
-
     conf_file_modified
   end
 end
