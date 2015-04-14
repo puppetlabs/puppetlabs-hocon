@@ -62,4 +62,20 @@ Puppet::Type.newtype(:hocon_setting) do
       end
     end
   end
+
+  validate do
+    message = ""
+    if self.original_parameters[:path].nil?
+      message += "path is a required parameter. "
+    end
+    if self.original_parameters[:setting].nil?
+      message += "setting is a required parameter. "
+    end
+    if self.original_parameters[:value].nil? && self[:ensure] != :absent
+      message += "value is a required parameter unless ensuring a setting is absent."
+    end
+    if message != ""
+      raise(Puppet::Error, message)
+    end
+  end
 end

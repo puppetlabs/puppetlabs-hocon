@@ -144,7 +144,7 @@ describe 'hocon_setting resource' do
     end
   end
 
-  describe 'section, setting, value parameters' do
+  describe 'setting, value parameters' do
     {
       "setting => 'test.foo', value => 'bar',"   => "test {\n    foo = bar\n}",
       "setting => 'more.baz', value => 'quux',"  => "more {\n    baz = quux\n}",
@@ -168,7 +168,7 @@ describe 'hocon_setting resource' do
       "setting => 'test.foo',"               => /value is a required/,
       "value   => 'bar',"                    => /setting is a required/,
     }.each do |parameter_list, error|
-      context parameter_list, :pending => 'no error checking yet' do
+      context parameter_list do
         pp = <<-EOS
         hocon_setting { "#{parameter_list}":
           ensure  => present,
