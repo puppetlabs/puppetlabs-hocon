@@ -44,7 +44,14 @@ Puppet::Type.newtype(:hocon_setting) do
             raise "Type specified as #{@resource[:type]} but was #{value.class}"
           end
         when 'number'
-          unless value.is_a?(Numeric)
+          # Puppet stringifies numerics in versions of Puppet < 4.0.0
+          # Account for this in the type
+          begin
+            numeric_as_string = Integer(value)
+          rescue ArgumentError
+            numeric_as_string = false
+          end
+          unless (value.is_a?(Numeric) or numeric_as_string)
             raise "Type specified as 'number' but was #{value.class}"
           end
         when 'array'
@@ -60,6 +67,13 @@ Puppet::Type.newtype(:hocon_setting) do
         else
           raise "Type was specified as #{@resource[:type]}, but should have been one of 'boolean', 'string', 'text', 'number', 'array', or 'hash'"
       end
+    end
+
+    munge do |value|
+      if value.is_a?(String) and @resource[:type] == 'number'
+        value = Integer(value)
+      end
+      value
     end
   end
 
