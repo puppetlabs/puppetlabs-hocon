@@ -541,7 +541,6 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      #expect(provider.value[0]).to eql(12)
       expect(provider.value[0].eql?(12)).to be(true)
     end
 
