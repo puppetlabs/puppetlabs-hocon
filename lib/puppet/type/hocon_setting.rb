@@ -70,7 +70,8 @@ Puppet::Type.newtype(:hocon_setting) do
 
     munge do |value|
       if value.is_a?(String) and @resource[:type] == 'number'
-        value = Float(value)
+        munged_value = Integer(value) rescue false
+        value = munged_value ? munged_value : Float(value)
       end
       value
     end
