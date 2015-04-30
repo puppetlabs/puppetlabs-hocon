@@ -42,9 +42,9 @@ To control a setting nested within a map contained at another setting, provide t
 under the "setting" parameter, with each level separated by a ".". So to manage `barsetting` in the following map
 
 ```
-foo {
-    bar {
-        barsetting="FOO!"
+foo : {
+    bar : {
+        barsetting : "FOO!"
     }
 }
 ```
@@ -131,7 +131,7 @@ hocon_setting { 'sample map setting':
     
     ```
     baz : qux
-    foo {
+    foo : {
       a : b
     }
     ```
@@ -152,7 +152,7 @@ hocon_setting { 'sample map setting':
     
     ```
     baz : qux
-    foo {
+    foo : {
       a : b
       bar : {
           # This is setting a
