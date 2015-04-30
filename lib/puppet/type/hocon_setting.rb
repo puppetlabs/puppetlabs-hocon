@@ -47,7 +47,7 @@ Puppet::Type.newtype(:hocon_setting) do
           # Puppet stringifies numerics in versions of Puppet < 4.0.0
           # Account for this in the type
           begin
-            numeric_as_string = Integer(value)
+            numeric_as_string = Float(value)
           rescue ArgumentError
             numeric_as_string = false
           end
@@ -71,7 +71,7 @@ Puppet::Type.newtype(:hocon_setting) do
 
     munge do |value|
       if value.is_a?(String) and @resource[:type] == 'number'
-        value = Integer(value)
+        value = Float(value)
       end
       value
     end
