@@ -517,13 +517,22 @@ EOS
       expect(provider.value[0]).to eql(true)
     end
 
-    it "should be able to handle number value with number type specified" do
+    it "should be able to handle an integer value with number type specified" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                      :setting => 'test_key_1.master', :value => 12, :type => 'number'))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0]).to eql(12)
+      expect(provider.value[0].eql?(12)).to be(true)
+    end
+
+    it "should be able to handle a float value with number type specified" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                     :setting => 'test_key_1.master', :value => 13.37, :type => 'number'))
+      provider = described_class.new(resource)
+      provider.create
+      expect(provider.exists?).to be true
+      expect(provider.value[0].eql?(13.37)).to be(true)
     end
 
     it "should be able to handle an Integer string value with number type specified" do
@@ -532,7 +541,8 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0]).to eql(12)
+      #expect(provider.value[0]).to eql(12)
+      expect(provider.value[0].eql?(12)).to be(true)
     end
 
     it "should be able to handle a Float string value with number type specified" do
@@ -541,7 +551,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0]).to eql(13.37)
+      expect(provider.value[0].eql?(13.37)).to be(true)
     end
 
     it "should be able to handle string value with string type specified" do

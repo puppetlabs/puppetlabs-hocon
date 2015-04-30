@@ -45,12 +45,11 @@ Puppet::Type.newtype(:hocon_setting) do
           end
         when 'number'
           # Puppet stringifies numerics in versions of Puppet < 4.0.0
-          # Account for this in the type
-          begin
-            numeric_as_string = Float(value)
-          rescue ArgumentError
-            numeric_as_string = false
-          end
+          # Account for this by first attempting to cast to an Integer.
+          # Failing that, attempt to cast to a Float or return false
+          numeric_as_string = Integer(value) rescue false
+          numeric_as_string = numeric_as_string ? numeric_as_string : Float(value) rescue false
+
           unless (value.is_a?(Numeric) or numeric_as_string)
             raise "Type specified as 'number' but was #{value.class}"
           end
