@@ -8,8 +8,6 @@ end
 require File.expand_path('../../../util/config_saver', __FILE__)
 
 Puppet::Type.type(:hocon_setting).provide(:ruby) do
-  mk_resource_methods
-
   def self.namevar(section_name, setting)
     "#{setting}"
   end
@@ -28,6 +26,14 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     conf_file_modified = conf_file.remove_value(setting)
     Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
     @conf_file = nil
+  end
+
+  def type
+    @resource[:type]
+  end
+
+  def type=(value)
+    @resource[:type] = value
   end
 
   def value
