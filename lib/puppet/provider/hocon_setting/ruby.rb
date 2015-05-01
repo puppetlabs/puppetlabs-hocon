@@ -28,6 +28,14 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     @conf_file = nil
   end
 
+  def type
+    @resource[:type]
+  end
+
+  def type=(value)
+    @resource[:type] = value
+  end
+
   def value
     val = conf_object.get_value(setting).unwrapped
 
