@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-hocon.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-hocon)
+
 #HOCON file
 
 ####Table of Contents

@@ -1,0 +1,17 @@
+language: ruby
+sudo: false
+script:
+- bundle exec rake spec
+notifications:
+  email: false
+  hipchat:
+    rooms:
+      secure: ZnXjXpfn2I11z1/x4DS+o2YnTW5Gll8xMOXvF68HyTQTtJCgIXVzmyq6w1oNAKDBEOm6jWJ6kQA2fD2GSktk+Py0hDkNs232BGDf1nvQ7naBXZMfpkdwVG4hYNR20iirJW5FN2BaqoU8KusForv/Sp6veQkVo7Tw0BjfgFiJKP8=
+    template:
+    - ! '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}'
+    - ! 'Change view: %{compare_url}'
+    - ! 'Build details: %{build_url}'
+rvm:
+- 2.1.5
+- 2.0.0
+- 1.9.3
