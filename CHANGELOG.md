@@ -1,3 +1,9 @@
+## 0.9.1
+
+This is a minor bugfix release.
+* Allow true numeric values to be set in a configuration file in versions
+  of Puppet prior to 4.0.0.
+
 ## 0.9.0
 
 This is a major feature release.
