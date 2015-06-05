@@ -170,7 +170,7 @@ describe 'hocon_setting resource' do
     }.each do |parameter_list, error|
       context parameter_list do
         pp = <<-EOS
-        hocon_setting { "#{parameter_list}":
+        hocon_setting { "#{parameter_list}_setting":
           ensure  => present,
           path    => "#{tmpdir}/hocon_setting.conf",
           #{parameter_list}
