@@ -5,8 +5,6 @@ if Puppet.features.hocon?
   require 'hocon/config_value_factory'
 end
 
-require File.expand_path('../../../util/config_saver', __FILE__)
-
 Puppet::Type.type(:hocon_setting).provide(:ruby) do
   def self.namevar(section_name, setting)
     "#{setting}"
@@ -18,13 +16,13 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
 
   def create
     conf_file_modified = set_value(resource[:value])
-    Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
+    write_conf(conf_file_modified)
     @conf_file = nil
   end
 
   def destroy
     conf_file_modified = conf_file.remove_value(setting)
-    Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
+    write_conf(conf_file_modified)
     @conf_file = nil
   end
 
@@ -50,7 +48,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
 
   def value=(new_value)
     conf_file_modified = set_value(new_value)
-    Puppet::Util::ConfigSaver.save(resource[:path], conf_file_modified)
+    write_conf(conf_file_modified)
     @conf_file = nil
   end
 
@@ -68,6 +66,13 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
       File.new(file_path, "w")
     end
     @conf_file ||= Hocon::Parser::ConfigDocumentFactory.parse_file(file_path)
+  end
+
+  def write_conf(conf)
+    File.open(file_path, 'w+') do |fh|
+      config_string = conf.render
+      fh.puts(config_string)
+    end
   end
 
   def conf_object
