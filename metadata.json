@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-hocon",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "author": "puppetlabs",
   "summary": "Resource types for managing settings in HOCON files",
   "license": "Apache-2.0",

@@ -1,3 +1,11 @@
+## 0.9.2
+
+This is a minor bugfix release.
+* Move the logic for saving a modified configuration file out of its own
+  separate class and into the provider. This resolves an issue wherein
+  the hocon gem was sometimes being required when it shouldn't have been,
+  leading to errors.
+
 ## 0.9.1
 
 This is a minor bugfix release.
