@@ -7,6 +7,9 @@
   "source": "https://github.com/puppetlabs/puppetlabs-hocon",
   "project_page": "https://github.com/puppetlabs/puppetlabs-hocon",
   "issues_url": "https://github.com/puppetlabs/puppetlabs-hocon/issues",
+  "dependencies": [
+  
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
@@ -30,8 +33,5 @@
       "name": "ruby",
       "version_requirement": ">=1.9.0"
     }
-  ],
-  "dependencies": [
-  
   ]
 }
