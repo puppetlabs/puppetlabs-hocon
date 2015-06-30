@@ -198,7 +198,9 @@ test_key_2: {
     #another comment
 // yet another comment
 foo: bar
-test_key_4 : { huzzah : "shazaam" }
+test_key_4 : {
+  huzzah : "shazaam"
+}
       EOS
       )
     end
@@ -209,7 +211,7 @@ test_key_4 : { huzzah : "shazaam" }
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
-      validate_file(" test_key_1 : { setting1 : \"helloworld\" }\n", emptyfile)
+      validate_file("test_key_1 : {\n  setting1 : \"helloworld\"\n}\n", emptyfile)
     end
 
     it "should be able to handle variables of boolean type" do
