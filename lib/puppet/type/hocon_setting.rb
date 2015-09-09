@@ -61,7 +61,7 @@ Puppet::Type.newtype(:hocon_setting) do
           unless value.is_a?(Hash)
             raise "Type specified as 'hash' but was #{value.class}"
           end
-        when nil
+        when 'array_element', nil
           # Do nothing, we'll figure it out on our own
         else
           raise "Type was specified as #{@resource[:type]}, but should have been one of 'boolean', 'string', 'text', 'number', 'array', or 'hash'"
@@ -74,6 +74,33 @@ Puppet::Type.newtype(:hocon_setting) do
         value = munged_value ? munged_value : Float(value)
       end
       value
+    end
+
+    def insync?(is)
+      if @resource[:type] == 'array_element'
+        # make sure all passed values are in the file
+        Array(@resource[:value]).each do |v|
+          if not provider.value.flatten.include?(v)
+            return false
+          end
+        end
+        return true
+      else
+        super
+      end
+    end
+
+    def change_to_s(current, new)
+      if @resource[:type] == 'array_element'
+        real_new = []
+        real_new << current
+        real_new << new
+        real_new.flatten!
+        real_new.uniq!
+        "value changed [#{Array(current).flatten.join(", ")}] to [#{real_new.join(", ")}]"
+      else
+        super
+      end
     end
   end
 

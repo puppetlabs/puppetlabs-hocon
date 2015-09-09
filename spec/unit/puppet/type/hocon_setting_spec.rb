@@ -30,6 +30,7 @@ describe Puppet::Type.type(:hocon_setting) do
       'text',
       'number',
       'array',
+      'array_element',
       'hash'
     ]
 

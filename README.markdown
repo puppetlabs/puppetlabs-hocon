@@ -95,10 +95,10 @@ hocon_setting { 'sample map setting':
 * `value`: The value of the HOCON file setting to be defined.
 
 * `type`: The type of the value passed into the `value` parameter. This value should be a string, with valid values being
-    `'number'`, `'boolean'`, `'string'`, `'hash'`, `'array'`, and `'text'`.
+    `'number'`, `'boolean'`, `'string'`, `'hash'`, `'array'`, `'array_element'`, and `'text'`.
     
     This parameter will not be need to be set most of the time, as the module
-    is generally smart enough to figure this out on its own. There are only two cases in which this parameter is required.
+    is generally smart enough to figure this out on its own. There are only three cases in which this parameter is required.
     
     The first is the case in which the `value` type is a single-element array. In that case, the `type` parameter will need to be set to
     `'array'`. So, for example, to add a single-element array, you would add the following to your manifest
@@ -112,7 +112,22 @@ hocon_setting { 'sample map setting':
       type => 'array',
     }
     ```
-    
+
+    If you are trying to manage single entries in an array (for example, adding to an array from a define) you will need to set the `'type'` parameter to
+    `'array_element'`. For example, to add to an existing array in the 'foo' setting, you can add the following to your manifest
+
+    ```
+    hocon_setting { 'add to array':
+      ensure  => present,
+      path    => '/tmp/foo.conf',
+      setting => 'foo',
+      value   => 2,
+      type    => 'array_element',
+    }
+    ```
+
+    Note: When adding an item via 'array_element', the array must already exist in the HOCON file.
+
     Since this type represents a setting in a configuration file, you can pass a string containing the exact text of the value as you want it to appear
     in the file (this is useful, for example, if you want to set a parameter to a map or an array but want comments or specific indentation on elements in the map/array).
     In this case, `value` must be a string with no leading or trailing whitespace, newlines, or comments that contains a valid HOCON value, and the
@@ -165,7 +180,7 @@ hocon_setting { 'sample map setting':
     }
     ```
     
-    Aside from these two cases, the `type` parameter does not need to be set.
+    Aside from these three cases, the `type` parameter does not need to be set.
 
 ##Development
  
