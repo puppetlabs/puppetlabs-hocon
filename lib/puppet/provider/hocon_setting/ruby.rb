@@ -11,7 +11,16 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def exists?
-    conf_file.has_value?(setting)
+    if resource[:type] == 'array_element'
+      Array(@resource[:value]).each do |v|
+        if value.flatten.include?(v)
+          return true
+        end
+      end
+      return false
+    else
+      conf_file.has_value?(setting)
+    end
   end
 
   def create
@@ -21,7 +30,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def destroy
-    conf_file_modified = conf_file.remove_value(setting)
+    conf_file_modified = remove_value(resource[:value])
     write_conf(conf_file_modified)
     @conf_file = nil
   end
@@ -82,8 +91,39 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     Hocon::ConfigFactory.parse_file(file_path)
   end
 
+  def remove_value(value_to_remove)
+    if resource[:type] == 'array_element'
+      new_value_tmp = []
+      val = value
+      Array(val).each do |v|
+        new_value_tmp << v
+      end
+      Array(value_to_remove).each do |v|
+        new_value_tmp.delete(v)
+      end
+      new_value = Hocon::ConfigValueFactory.from_any_ref(new_value_tmp, nil)
+      conf_file_modified = conf_file.set_config_value(setting, new_value)
+    else
+      conf_file_modified = conf_file.remove_value(setting)
+    end
+    conf_file_modified
+  end
+
   def set_value(value_to_set)
-    if resource[:type] == 'array' || (value_to_set.is_a?(String) && resource[:type] != 'text') || (value_to_set.is_a?(Array) && value_to_set.size > 1)
+    if resource[:type] == 'array_element'
+      tmp_val = []
+      val = value
+      Array(val).each do |v|
+        tmp_val << v
+      end
+      Array(value_to_set).each do |v|
+        unless tmp_val.include?(v)
+          tmp_val << v
+        end
+      end
+
+      new_value = Hocon::ConfigValueFactory.from_any_ref(tmp_val, nil)
+    elsif resource[:type] == 'array' || (value_to_set.is_a?(String) && resource[:type] != 'text') || (value_to_set.is_a?(Array) && value_to_set.size > 1)
       new_value = Hocon::ConfigValueFactory.from_any_ref(value_to_set, nil)
     elsif resource[:type] == 'text'
       new_value = value_to_set[0]

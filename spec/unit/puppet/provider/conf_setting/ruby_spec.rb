@@ -28,6 +28,90 @@ describe provider_class do
     end
   end
 
+  context "array_element" do
+    let(:orig_content) {
+      <<-EOS
+test_key_1: [
+  {
+    foo: foovalue
+    bar: barvalue
+    master: true
+  }
+,
+  {
+    foo: foovalue2
+    baz: bazvalue
+    url: "http://192.168.1.1:8080"
+  }
+,
+  {
+    foo: foovalue3
+  }
+]
+      EOS
+    }
+
+    it "should add a new element to the array" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+          :setting => 'test_key_1', :value => [{ 'foo' => 'foovalue3' }, { 'bar' => 'barvalue3' }], :type => 'array_element'))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be true
+      provider.create
+      validate_file(
+          <<-EOS
+test_key_1: [
+    {
+        "bar" : "barvalue",
+        "foo" : "foovalue",
+        "master" : true
+    }
+,
+    {
+        "baz" : "bazvalue",
+        "foo" : "foovalue2",
+        "url" : "http://192.168.1.1:8080"
+    }
+,
+    {
+        "foo" : "foovalue3"
+    }
+,
+    {
+        "bar" : "barvalue3"
+    }
+
+]
+      EOS
+)
+    end
+
+    it "should remove elements from the array" do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+        :setting => 'test_key_1', :ensure => 'absent', :value => { 'foo' => 'foovalue3' }, :type => 'array_element'))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be true
+      provider.destroy
+      validate_file(
+          <<-EOS
+test_key_1: [
+    {
+        "bar" : "barvalue",
+        "foo" : "foovalue",
+        "master" : true
+    }
+,
+    {
+        "baz" : "bazvalue",
+        "foo" : "foovalue2",
+        "url" : "http://192.168.1.1:8080"
+    }
+
+]
+      EOS
+)
+    end
+  end
+
   context "when ensuring that a setting is present" do
     let(:orig_content) {
       <<-EOS
