@@ -1,3 +1,10 @@
+## 0.9.3
+
+This is a feature release.
+* Update the hocon gem dependency from 0.9.2 to 0.9.3
+* Add support for managing individual array elements via the `array_element`
+  value for the `type` parameter
+
 ## 0.9.2
 
 This is a minor bugfix release.
