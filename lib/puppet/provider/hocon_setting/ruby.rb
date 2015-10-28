@@ -11,16 +11,21 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def exists?
-    if resource[:type] == 'array_element'
-      Array(@resource[:value]).each do |v|
-        if value.flatten.include?(v)
-          return true
+    ret_value = false
+
+    if conf_file.has_value?(setting)
+      if resource[:type] == 'array_element'
+        Array(@resource[:value]).each do |v|
+          if value.flatten.include?(v)
+            return true
+          end
         end
+      else
+        ret_value = true
       end
-      return false
-    else
-      conf_file.has_value?(setting)
     end
+
+    return ret_value
   end
 
   def create
@@ -44,13 +49,22 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def value
-    val = conf_object.get_value(setting).unwrapped
-
-    # This is required because of :array_matching => :all.
-    # Without this, Puppet will almost always register changes
-    # to a hocon_setting even when it shouldn't.
+    val = conf_file.has_value?(setting) ?
+        conf_object.get_value(setting).unwrapped : []
     unless val.is_a?(Array)
-      val = [val]
+      if resource[:type] == 'array_element'
+        # If the current value of the target setting is not an array,
+        # present the current value as an empty array so that an
+        # element is added to an empty array (as opposed to converting
+        # the current value into the first element in an array and
+        # adding the value to set as a second element in the array).
+        val = []
+      else
+        # This is required because of :array_matching => :all.
+        # Without this, Puppet will almost always register changes
+        # to a hocon_setting even when it shouldn't.
+        val = [val]
+      end
     end
     val
   end

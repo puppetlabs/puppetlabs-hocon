@@ -110,6 +110,90 @@ test_key_1: [
       EOS
 )
     end
+
+    it "should add an array element even if the target setting does not yet exist" do
+      resource = Puppet::Type::Hocon_setting.new(
+          common_params.merge(:setting => 'test_key_2',
+                              :ensure => 'present',
+                              :value => { 'foo' => 'foovalue3' },
+                              :type => 'array_element'))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be false
+      provider.create
+      validate_file(
+          <<-EOS
+test_key_1: [
+  {
+    foo: foovalue
+    bar: barvalue
+    master: true
+  }
+,
+  {
+    foo: foovalue2
+    baz: bazvalue
+    url: "http://192.168.1.1:8080"
+  }
+,
+  {
+    foo: foovalue3
+  }
+]
+test_key_2 : [
+
+    {
+
+        "foo" : "foovalue3"
+
+    }
+
+
+
+]
+      EOS
+      )
+    end
+
+    it "should add an array element even if the target setting is not an array" do
+      File.open(tmpfile, 'a') do |fh|
+        fh.write('test_key_2: 3')
+      end
+      resource = Puppet::Type::Hocon_setting.new(
+          common_params.merge(:setting => 'test_key_2',
+                              :ensure => 'present',
+                              :value => { 'foo' => 'foovalue3' },
+                              :type => 'array_element'))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be false
+      provider.create
+      validate_file(
+          <<-EOS
+test_key_1: [
+  {
+    foo: foovalue
+    bar: barvalue
+    master: true
+  }
+,
+  {
+    foo: foovalue2
+    baz: bazvalue
+    url: "http://192.168.1.1:8080"
+  }
+,
+  {
+    foo: foovalue3
+  }
+]
+test_key_2: [
+    {
+        "foo" : "foovalue3"
+    }
+
+]
+      EOS
+      )
+    end
   end
 
   context "when ensuring that a setting is present" do
