@@ -10,6 +10,7 @@ group :development, :test do
   gem 'beaker',                       :require => false
   gem 'beaker-rspec', '>= 2.2',       :require => false
   gem 'pry',                          :require => false
+  gem 'pry-nav',                      :require => false
   gem 'simplecov',                    :require => false
   gem 'beaker-puppet_install_helper', :require => false
 end
