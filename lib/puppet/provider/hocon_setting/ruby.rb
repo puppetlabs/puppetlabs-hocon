@@ -11,21 +11,31 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def exists?
-    ret_value = false
+    unless conf_file.has_value?(setting)
+      return false
+    end
 
-    if conf_file.has_value?(setting)
-      if resource[:type] == 'array_element'
-        Array(@resource[:value]).each do |v|
-          if value.flatten.include?(v)
-            return true
-          end
-        end
-      else
-        ret_value = true
+    type = @resource[:type]
+    conf_value = conf_object.get_value(setting).value
+
+    if type == 'array'
+      unless conf_value.is_a?(Array)
+        return false
       end
     end
 
-    return ret_value
+    if type == nil &&
+       conf_value.is_a?(Array) &&
+       conf_value.length == 1
+
+      return false
+    end
+
+    if type == 'array_element'
+      return Array(@resource[:value]).any? { |v| value.flatten.include?(v) }
+    end
+
+    return true
   end
 
   def create

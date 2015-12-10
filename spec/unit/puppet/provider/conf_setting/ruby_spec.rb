@@ -194,6 +194,49 @@ test_key_2: [
       EOS
       )
     end
+
+    it "should convert a scalar key to a single element array when type is set" do
+      File.open(tmpfile, 'w') do |fh|
+        fh.write('ennui: yes')
+      end
+      resource = Puppet::Type::Hocon_setting.new(
+        common_params.merge(:setting => 'ennui',
+                            :ensure => 'present',
+                            :value => ['yes'],
+                            :type => 'array'))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be false
+      provider.create
+      expect(provider.exists?).to be true
+      validate_file(
+        <<-EOS
+ennui: [
+    "yes"
+]
+EOS
+      )
+    end
+
+    it "should convert to a scalar from single element array when type is unset" do
+      content = <<-EOS
+ennui: [
+    "yes"
+]
+EOS
+      File.open(tmpfile, 'w') do |fh|
+        fh.write(content)
+      end
+      resource = Puppet::Type::Hocon_setting.new(
+        common_params.merge(:setting => 'ennui',
+                            :ensure => 'present',
+                            :value => ['yes'],))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be false
+      provider.create
+      expect(provider.exists?).to be true
+      validate_file("ennui: \"yes\"\n")
+    end
+
   end
 
   context "when ensuring that a setting is present" do
