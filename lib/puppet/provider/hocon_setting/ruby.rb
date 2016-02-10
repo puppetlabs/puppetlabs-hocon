@@ -1,11 +1,6 @@
-require 'puppet/util/feature'
-if Puppet.features.hocon?
-  require 'hocon/config_factory'
-  require 'hocon/parser/config_document_factory'
-  require 'hocon/config_value_factory'
-end
-
 Puppet::Type.type(:hocon_setting).provide(:ruby) do
+  confine :feature => :hocon
+
   def self.namevar(section_name, setting)
     "#{setting}"
   end
