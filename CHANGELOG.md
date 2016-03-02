@@ -1,3 +1,10 @@
+## 0.9.4
+
+This is a bugfix release.
+* Confine provider based on hocon gem 
+* Handle changing value from scalar to array
+* Handle adding array value when array doesn't exist
+
 ## 0.9.3
 
 This is a feature release.
