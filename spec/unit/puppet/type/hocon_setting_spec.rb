@@ -3,7 +3,7 @@ require 'puppet/type/hocon_setting'
 describe Puppet::Type.type(:hocon_setting) do
   let(:resource) {
     Puppet::Type.type(:hocon_setting).new(
-      :name       => 'hocon setting',
+      :title      => 'hocon setting',
       :path       => '/tmp/hocon.setting',
       :setting    => 'test_key.master',
       :value      => 'value',

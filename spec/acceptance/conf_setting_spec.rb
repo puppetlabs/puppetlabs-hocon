@@ -164,9 +164,8 @@ describe 'hocon_setting resource' do
     end
 
     {
-      ""                                     => /setting is a required.+value is a required/,
+      ""                                     => /value is a required/,
       "setting => 'test.foo',"               => /value is a required/,
-      "value   => 'bar',"                    => /setting is a required/,
     }.each do |parameter_list, error|
       context parameter_list do
         pp = <<-EOS
@@ -213,6 +212,48 @@ describe 'hocon_setting resource' do
       EOS
 
       it_behaves_like 'has_error', 'foo', pp, /must be fully qualified/
+    end
+  end
+
+  describe 'path and setting parameters' do
+    context 'path and setting must be unique' do
+      pp = <<-EOS
+      hocon_setting {'one.two':
+        ensure => present,
+        value => 'one',
+        path => '#{tmpdir}/one.conf',
+      }
+
+      hocon_setting {'one.two2':
+        setting => 'one.two',
+        ensure => present,
+        value => 'two',
+        path => '#{tmpdir}/one.conf',
+      }
+      EOS
+
+      it_behaves_like 'has_error', 'foo', pp, /Cannot alias/
+    end
+
+    context 'setting can be the same if path is different' do
+      pp = <<-EOS
+      hocon_setting {'one.two3':
+        setting => 'one.two',
+        ensure => present,
+        value => 'one',
+        path => '#{tmpdir}/four.conf',
+      }
+
+      hocon_setting {'one.two4':
+        setting => 'one.two',
+        ensure => present,
+        value => 'two',
+        path => '#{tmpdir}/five.conf',
+      }
+      EOS
+
+      it_behaves_like 'has_content', "#{tmpdir}/four.conf", pp, "one {\n    two=one\n}"
+      it_behaves_like 'has_content', "#{tmpdir}/five.conf", pp, "one {\n    two=two\n}"
     end
   end
 end
