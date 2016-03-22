@@ -5,15 +5,11 @@ Puppet::Type.newtype(:hocon_setting) do
     defaultto :present
   end
 
-  newparam(:name, :namevar => true) do
-    desc 'An arbitrary name used as the identity of the resource.'
-  end
-
-  newparam(:setting) do
+  newparam(:setting, :namevar => true) do
     desc 'The name of the setting to be defined.'
   end
 
-  newparam(:path) do
+  newparam(:path, :namevar => true) do
     desc 'The file Puppet will ensure contains the specified setting.'
     validate do |value|
       unless (Puppet.features.posix? and value =~ /^\//) or (Puppet.features.microsoft_windows? and (value =~ /^.:\// or value =~ /^\/\/[^\/]+\/[^\/]+/))
@@ -104,6 +100,14 @@ Puppet::Type.newtype(:hocon_setting) do
         super
       end
     end
+  end
+
+  def self.title_patterns
+    # This is the default title pattern for all types, except hard-wired to
+    # set the title to :setting instead of :name. This is also hard-wired to
+    # ONLY set :setting and nothing else, and this will be overridden if
+    # the :setting parameter is set manually.
+    [ [ /(.*)/m, [ [:setting] ] ] ]
   end
 
   validate do

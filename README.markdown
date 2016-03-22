@@ -81,16 +81,25 @@ hocon_setting { 'sample map setting':
 
 * `ensure`: Ensures that the resource is present. Valid values are 'present', 'absent'.
 
-* `name`: An arbitrary name used as the identity of the resource.
-
 * `path`: The HOCON file in which Puppet will ensure the specified setting.
+  
+  This parameter, along with `setting`, is one of two namevars for the
+  `hocon_setting` type, meaning that Puppet will give an error if two `hocon_setting` resources have the same `setting`
+  and `path` parameters.
 
 * `provider`: The specific backend to use for this `hocon_setting` resource. You will seldom need to specify this --- Puppet will usually discover the appropriate provider for your platform. The only available provider for `hocon_setting` is ruby.
 
 * `setting`: The name of the HOCON file setting to be defined. This can be a top-level setting or a setting nested
   within another setting. To define a nested setting, give the full path to that setting with each level separated
   by a `.` So, to define a setting `foosetting` nested within a setting called `foo` contained on the top level,
-  the `setting` parameter would be set to `foo.foosetting`.
+  the `setting` parameter would be set to `foo.foosetting`. 
+  
+  This parameter, along with `path`, is one of two namevars for the
+  `hocon_setting` type, meaning that Puppet will give an error if two `hocon_setting` resources have the same `setting`
+  and `path` parameters. 
+  
+  If no `setting` value is explicitly set, the title of the resource will be used
+  as the value of `setting`.
 
 * `value`: The value of the HOCON file setting to be defined.
 
