@@ -202,3 +202,9 @@ You can read the complete module contribution guide on the [Puppet Labs wiki](ht
 ##Contributors
 
 The list of contributors can be found at: [https://github.com/puppetlabs/puppetlabs-hocon/graphs/contributors/contributors](https://github.com/puppetlabs/puppetlabs-hocon/graphs/contributors/contributors).
+
+## Maintainence
+
+Maintainers: Joe Pinsonault <joe.pinsonault@puppet.com>, Chris Price <chris@puppet.com>, Kevin Corcoran <kevin.corcoran@puppet.com>
+
+Tickets: https://tickets.puppetlabs.com/browse/HC
