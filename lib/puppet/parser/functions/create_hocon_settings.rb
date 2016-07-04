@@ -60,9 +60,9 @@ Will create the following resources
             'create_hocon_settings(): Requires all arguments to be a Hash')
     end
 
-    resources = settings.keys.inject({}) do |res, parent_setting|
+    resources = settings.keys.reduce({}) do |res, parent_setting|
       raise(Puppet::ParseError,
-            "create.conf_settings(): Settings for '#{parent_setting}' must contain a Hash") \
+            "create_hocon_settings(): Settings for '#{parent_setting}' must contain a Hash") \
         unless settings[parent_setting].is_a?(Hash)
 
       unless path = defaults.merge(settings)['path']
