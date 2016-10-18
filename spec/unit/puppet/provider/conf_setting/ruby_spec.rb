@@ -13,9 +13,9 @@ describe provider_class do
       :path     => tmpfile,
   } }
 
-  def validate_file(expected_content,tmpfile = tmpfile)
-    tmpcontent = File.read(tmpfile)
-    expect(File.read(tmpfile)).to eq(expected_content)
+  def validate_file(expected_content,tmp = tmpfile)
+    tmpcontent = File.read(tmp)
+    expect(File.read(tmp)).to eq(expected_content)
   end
 
 
