@@ -5,11 +5,7 @@ require 'beaker/puppet_install_helper'
 unless ENV['RS_PROVISION'] == 'no'
   run_puppet_install_helper
   hosts.each do |host|
-    if host[:type] == 'aio'
-      on host, "#{host['privatebindir']}/gem install hocon"
-    else
-      on host, "gem install hocon"
-    end
+    on host, puppet('resource package hocon provider=puppet_gem')
   end
 end
 
