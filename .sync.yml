@@ -5,3 +5,4 @@ Gemfile:
   optional:
     ':default':
       - gem: hocon
+        version: '~> 1.1'
