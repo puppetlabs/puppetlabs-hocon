@@ -23,8 +23,10 @@ group :development, :unit_tests do
   gem 'puppetlabs_spec_helper', '>= 1.2.1'
   gem 'rspec-puppet', '>= 2.3.2'
   gem 'rspec-puppet-facts'
+  gem 'mocha', '< 1.2.0'
   gem 'simplecov'
-  gem 'parallel_tests'
+  gem 'parallel_tests', '< 2.10.0' if RUBY_VERSION < '2.0.0'
+  gem 'parallel_tests' if RUBY_VERSION >= '2.0.0'
   gem 'rubocop', '0.41.2' if RUBY_VERSION < '2.0.0'
   gem 'rubocop' if RUBY_VERSION >= '2.0.0'
   gem 'rubocop-rspec', '~> 1.6' if RUBY_VERSION >= '2.3.0'
@@ -41,7 +43,7 @@ group :system_tests do
   gem 'beaker-hostgenerator', *location_from_env('BEAKER_HOSTGENERATOR_VERSION', [])
 end
 group :default do
-  gem 'hocon'
+  gem 'hocon', '~> 1.1'
 end
 
 gem 'facter', *location_from_env('FACTER_GEM_VERSION')
