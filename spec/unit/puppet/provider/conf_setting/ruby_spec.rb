@@ -61,23 +61,23 @@ test_key_1: [
           <<-EOS
 test_key_1: [
     {
-        "bar" : "barvalue",
-        "foo" : "foovalue",
-        "master" : true
+        "bar": "barvalue",
+        "foo": "foovalue",
+        "master": true
     }
 ,
     {
-        "baz" : "bazvalue",
-        "foo" : "foovalue2",
-        "url" : "http://192.168.1.1:8080"
+        "baz": "bazvalue",
+        "foo": "foovalue2",
+        "url": "http://192.168.1.1:8080"
     }
 ,
     {
-        "foo" : "foovalue3"
+        "foo": "foovalue3"
     }
 ,
     {
-        "bar" : "barvalue3"
+        "bar": "barvalue3"
     }
 
 ]
@@ -95,15 +95,15 @@ test_key_1: [
           <<-EOS
 test_key_1: [
     {
-        "bar" : "barvalue",
-        "foo" : "foovalue",
-        "master" : true
+        "bar": "barvalue",
+        "foo": "foovalue",
+        "master": true
     }
 ,
     {
-        "baz" : "bazvalue",
-        "foo" : "foovalue2",
-        "url" : "http://192.168.1.1:8080"
+        "baz": "bazvalue",
+        "foo": "foovalue2",
+        "url": "http://192.168.1.1:8080"
     }
 
 ]
@@ -139,11 +139,11 @@ test_key_1: [
     foo: foovalue3
   }
 ]
-test_key_2 : [
+test_key_2: [
 
     {
 
-        "foo" : "foovalue3"
+        "foo": "foovalue3"
 
     }
 
@@ -187,7 +187,7 @@ test_key_1: [
 ]
 test_key_2: [
     {
-        "foo" : "foovalue3"
+        "foo": "foovalue3"
     }
 
 ]
@@ -282,7 +282,7 @@ test_key_1: {
 
   bar: barvalue
   master: true
-  yahoo : "yippee"
+  yahoo: "yippee"
 }
 
 test_key_2: {
@@ -409,8 +409,8 @@ test_key_2: {
     #another comment
 // yet another comment
 foo: bar
-test_key_4 : {
-  huzzah : "shazaam"
+test_key_4: {
+  huzzah: "shazaam"
 }
       EOS
       )
@@ -422,7 +422,7 @@ test_key_4 : {
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
-      validate_file("test_key_1 : {\n  setting1 : \"helloworld\"\n}\n", emptyfile)
+      validate_file("test_key_1: {\n  setting1: \"helloworld\"\n}\n", emptyfile)
     end
 
     it "should be able to handle variables of boolean type" do
@@ -553,7 +553,7 @@ foo=blah
     # yet another comment
     foo="http://192.168.1.1:8080"
 }
-bar : "yippee"
+bar: "yippee"
       EOS
       )
     end
@@ -603,7 +603,7 @@ foo="yippee"
 "test_key_2" {
     foo="http://192.168.1.1:8080"
 }
-foo : "yippee"
+foo: "yippee"
       EOS
       )
     end
