@@ -47,6 +47,7 @@ group :development do
   gem 'rubocop-rspec', '~> 1.6',            :require => false if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.3.0')
   gem 'pry',                                :require => false
   gem 'json_pure', '<= 2.0.1',              :require => false if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
+  gem 'hocon', '~> 1.1',                    :require => false
 end
 
 group :system_tests do
@@ -59,10 +60,6 @@ group :system_tests do
   gem 'beaker-puppet_install_helper',                                            :require => false
   gem 'master_manipulator',                                                      :require => false
   gem 'beaker-hostgenerator', *location_for(ENV['BEAKER_HOSTGENERATOR_VERSION'])
-end
-
-group :default do
-  gem 'hocon', '~> 1.1', :require => false
 end
 
 gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'])
