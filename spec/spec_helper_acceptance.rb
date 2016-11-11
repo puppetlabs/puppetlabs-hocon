@@ -5,7 +5,15 @@ require 'beaker/puppet_install_helper'
 unless ENV['RS_PROVISION'] == 'no'
   run_puppet_install_helper
   hosts.each do |host|
-    on host, puppet('resource package hocon provider=puppet_gem')
+    puppet_version = (on default, puppet('--version')).output.chomp
+
+    if ENV['PUPPET_INSTALL_TYPE'] == 'pe' && Gem::Version.new(puppet_version) < Gem::Version.new('4.0.0')
+      on host, puppet('resource package hocon provider=pe_gem')
+    elsif Gem::Version.new(puppet_version) >= Gem::Version.new('4.0.0')
+      on host, puppet('resource package hocon provider=puppet_gem')
+    else
+      on host, puppet('resource package hocon provider=gem')
+    end
   end
 end
 
