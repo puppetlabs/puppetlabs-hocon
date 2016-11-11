@@ -5,6 +5,6 @@ spec/spec_helper.rb:
   allow_deprecations: true
 Gemfile:
   optional:
-    ':default':
+    ':development':
       - gem: hocon
         version: '~> 1.1'
