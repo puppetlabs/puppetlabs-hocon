@@ -7,9 +7,9 @@ unless ENV['RS_PROVISION'] == 'no'
   hosts.each do |host|
     puppet_version = (on default, puppet('--version')).output.chomp
 
-    if ENV['PUPPET_INSTALL_TYPE'] == 'pe' && Gem::Version.new(puppet_version) < Gem::Version.new('4.0.0')
+    if Gem::Version.new(puppet_version).to_s =~ /Puppet Enterprise /
       on host, puppet('resource package hocon provider=pe_gem')
-    elsif Gem::Version.new(puppet_version) >= Gem::Version.new('4.0.0')
+    elsif ENV['PUPPET_INSTALL_TYPE'] != 'foss' && Gem::Version.new(puppet_version) >= Gem::Version.new('4.0.0')
       on host, puppet('resource package hocon provider=puppet_gem')
     else
       on host, puppet('resource package hocon provider=gem')
