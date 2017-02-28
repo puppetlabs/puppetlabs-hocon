@@ -372,6 +372,38 @@ foo: bar
       )
     end
 
+    it "should be able to handle settings with ip addresses" do
+      resource = Puppet::Type::Conf_setting.new(common_params.merge(
+        :setting => 'test_key_2.listen_address', :value => '0.0.0.0'))
+      provider = described_class.new(resource)
+      provider.exists?.should be true
+      provider.value.should == '0.0.0.0'
+      provider.value=('0.0.0.0')
+
+      validate_file(<<-EOS
+# This is a comment
+"test_key_1" {
+    # This is also a comment
+    foo=foovalue
+    bar=barvalue
+    master=true
+}
+"test_key_2" {
+    foo=foovalue2
+    baz=bazvalue
+    url="http://192.168.0.1:8080"
+    listen_address=0.0.0.0
+}
+"test_key:3" {
+    foo=bar
+}
+# another comment
+# yet another comment
+foo=bar
+      EOS
+      )
+    end
+
     it "should recognize an existing setting with the specified value" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
            :setting => 'test_key_2.baz', :value => 'bazvalue'))
