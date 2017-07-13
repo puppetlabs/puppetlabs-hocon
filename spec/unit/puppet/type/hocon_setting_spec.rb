@@ -72,7 +72,7 @@ describe Puppet::Type.type(:hocon_setting) do
     ['string', 'text'].each do |t|
       resource[:type]  = t
       expect { resource[:value] = 4 }.to raise_error \
-        Puppet::Error, /Type specified as #{t} but was Fixnum/
+        Puppet::Error, /Type specified as #{t} but was (Fixnum|Integer)/
     end
   end
 
@@ -120,6 +120,6 @@ describe Puppet::Type.type(:hocon_setting) do
   it 'raises an error with invalid hash values' do
     resource[:type]  = 'hash'
     expect { resource[:value] = 4 }.to raise_error \
-      Puppet::Error, /Type specified as 'hash' but was Fixnum/
+      Puppet::Error, /Type specified as 'hash' but was (Fixnum|Integer)/
   end
 end
