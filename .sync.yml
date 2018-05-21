@@ -1,10 +1,40 @@
 ---
-appveyor.yml:
-  delete: true
 .travis.yml:
   hipchat: ZnXjXpfn2I11z1/x4DS+o2YnTW5Gll8xMOXvF68HyTQTtJCgIXVzmyq6w1oNAKDBEOm6jWJ6kQA2fD2GSktk+Py0hDkNs232BGDf1nvQ7naBXZMfpkdwVG4hYNR20iirJW5FN2BaqoU8KusForv/Sp6veQkVo7Tw0BjfgFiJKP8=
+  docker_sets:
+    - set: docker/centos-7
+    - set: docker/ubuntu-14.04
+  docker_defaults:
+    bundler_args: ""
+  secure: ""
+  branches:
+    - release
+
 Gemfile:
+  required:
+    ':system_tests':
+      - gem: 'puppet-module-posix-system-r#{minor_version}'
+        platforms: ruby
+      - gem: 'puppet-module-win-system-r#{minor_version}'
+        platforms:
+          - mswin
+          - mingw
+          - x64_mingw
+      - gem: beaker
+        version: '~> 3.13'
+        from_env: BEAKER_VERSION
+      - gem: beaker-abs
+        from_env: BEAKER_ABS_VERSION
+        version: '~> 0.1'
+      - gem: beaker-pe
+      - gem: beaker-hostgenerator
+        from_env: BEAKER_HOSTGENERATOR_VERSION
+      - gem: beaker-rspec
+        from_env: BEAKER_RSPEC_VERSION
   optional:
     ':development':
       - gem: hocon
         version: '~> 1.1'
+
+appveyor.yml:
+  delete: true
