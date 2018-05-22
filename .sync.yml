@@ -41,3 +41,7 @@ appveyor.yml:
 
 .gitlab-ci.yml:
   unmanaged: true
+
+Rakefile:
+  requires:
+    - puppet-lint/tasks/puppet-lint
