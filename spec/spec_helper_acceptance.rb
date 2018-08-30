@@ -1,9 +1,12 @@
+require 'beaker-pe'
+require 'beaker-puppet'
 require 'beaker-rspec/spec_helper'
 require 'beaker-rspec/helpers/serverspec'
 require 'beaker/puppet_install_helper'
 
 unless ENV['RS_PROVISION'] == 'no'
   run_puppet_install_helper
+  configure_type_defaults_on(hosts)
   hosts.each do |host|
     puppet_version = (on default, puppet('--version')).output.chomp
 
