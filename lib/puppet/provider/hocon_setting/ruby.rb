@@ -107,7 +107,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     if @conf_file.nil? && !File.exist?(file_path)
       File.new(file_path, 'w')
     end
-    Hocon::ConfigFactory.parse_file(file_path)
+    Hocon::ConfigFactory.parse_file(file_path).resolve
   end
 
   def remove_value(value_to_remove)

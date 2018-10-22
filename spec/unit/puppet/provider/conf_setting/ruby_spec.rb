@@ -839,4 +839,33 @@ EOS
       expect(provider.value[0]).to eql('a' => 'b')
     end
   end
+
+  context 'substitutions' do
+    let(:orig_content) do
+      <<-EOS
+test_key_1:
+  {
+    bar: barvalue
+  }
+sub_key: ${test_key_1.bar}
+      EOS
+    end
+
+    it 'can change the value of a setting with a substitution' do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                   setting: 'sub_key', ensure: 'present', value: 'newvalue', type: 'string',
+      ))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be true
+      provider.value = 'newvalue'
+      validate_file(<<-EOS
+test_key_1:
+  {
+    bar: barvalue
+  }
+sub_key: "newvalue"
+      EOS
+                   )
+    end
+  end
 end
