@@ -15,7 +15,7 @@
 
 ## Overview
 
-This module adds resource types to manage settings in HOCON-style configuration files.
+This module adds resource types to manage settings in [HOCON-style](https://github.com/lightbend/config/blob/master/HOCON.md) configuration files.
 
 ## Module Description
 
