@@ -1,30 +1,25 @@
 require 'spec_helper_acceptance'
 
-tmpdir = default.tmpdir('tmp')
+tmpdir = setup_test_directory
 
 describe 'hocon_setting resource' do
   after :all do
-    shell("rm #{tmpdir}/*.conf", acceptable_exit_codes: [0, 1, 2])
+    run_shell("rm #{tmpdir}/*.conf", acceptable_exit_codes: [0, 1, 2])
   end
 
   shared_examples 'has_content' do |path, pp, content|
     before :all do
-      shell("rm #{path}", acceptable_exit_codes: [0, 1, 2])
-    end
-    after :all do
-      shell("cat #{path}", acceptable_exit_codes: [0, 1, 2])
-      shell("rm #{path}", acceptable_exit_codes: [0, 1, 2])
+      run_shell("rm #{path}", expect_failures: true)
     end
 
     it 'applies the manifest twice' do
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      idempotent_apply(pp)
     end
 
     describe file(path) do
       it { is_expected.to be_file }
       # XXX Solaris 10 doesn't support multi-line grep
-      it("should contain #{content}", unless: fact('osfamily') == 'Solaris') {
+      it("should contain #{content}") {
         is_expected.to contain(content)
       }
     end
@@ -32,11 +27,7 @@ describe 'hocon_setting resource' do
 
   shared_examples 'has_error' do |path, pp, error|
     before :all do
-      shell("rm #{path}", acceptable_exit_codes: [0, 1, 2])
-    end
-    after :all do
-      shell("cat #{path}", acceptable_exit_codes: [0, 1, 2])
-      shell("rm #{path}", acceptable_exit_codes: [0, 1, 2])
+      run_shell("rm #{path}", expect_failures: true)
     end
 
     it 'applies the manifest and gets a failure message' do
@@ -66,14 +57,12 @@ describe 'hocon_setting resource' do
       EOS
 
       it 'applies the manifest twice' do
-        apply_manifest(pp, catch_failures: true)
-        apply_manifest(pp, catch_changes: true)
+        idempotent_apply(pp)
       end
 
       describe file("#{tmpdir}/hocon_setting.conf") do
         it { is_expected.to be_file }
-        # XXX Solaris 10 doesn't support multi-line grep
-        it("contains one {\n two=three\n}\nfour=five", unless: fact('osfamily') == 'Solaris') {
+        it("contains one {\n two=three\n}\nfour=five") {
           is_expected.to contain("one {\n    two=three\n}\nfour=five")
         }
       end
@@ -81,10 +70,10 @@ describe 'hocon_setting resource' do
 
     context '=> absent for key/value' do
       before :all do
-        if fact('osfamily') == 'Darwin'
-          shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+        if os[:family] == 'Darwin'
+          run_shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         else
-          shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+          run_shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         end
       end
 
@@ -98,8 +87,7 @@ describe 'hocon_setting resource' do
       EOS
 
       it 'applies the manifest twice' do
-        apply_manifest(pp, catch_failures: true)
-        apply_manifest(pp, catch_changes: true)
+        idempotent_apply(pp)
       end
 
       describe file("#{tmpdir}/hocon_setting.conf") do
@@ -111,15 +99,14 @@ describe 'hocon_setting resource' do
 
     context '=> absent for top-level settings' do
       before :all do
-        if fact('osfamily') == 'Darwin'
-          shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+        if os[:family] == 'Darwin'
+          run_shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         else
-          shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+          run_shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
         end
       end
       after :all do
-        shell("cat #{tmpdir}/hocon_setting.conf", acceptable_exit_codes: [0, 1, 2])
-        shell("rm #{tmpdir}/hocon_setting.conf", acceptable_exit_codes: [0, 1, 2])
+        run_shell("rm #{tmpdir}/hocon_setting.conf", acceptable_exit_codes: [0, 1, 2])
       end
 
       pp = <<-EOS
@@ -132,8 +119,7 @@ describe 'hocon_setting resource' do
       EOS
 
       it 'applies the manifest twice' do
-        apply_manifest(pp, catch_failures: true)
-        apply_manifest(pp, catch_changes: true)
+        idempotent_apply(pp)
       end
 
       describe file("#{tmpdir}/hocon_setting.conf") do

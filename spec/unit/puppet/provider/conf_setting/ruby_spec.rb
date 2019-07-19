@@ -28,8 +28,6 @@ describe provider_class do
       fh.write('')
     end
   end
-
-  # rubocop:disable Layout/IndentHeredoc
   context 'array_element' do
     let(:orig_content) do
       <<-EOS
