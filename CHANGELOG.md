@@ -5,13 +5,13 @@ and this project adheres to [Semantic Versioning](http://semver.org).
 
 ## Release [1.0.1]
 ### Summary
-This is a minor release to formaly announce that this module is not supported. Any previous claims otherwise were are in error
+This is a minor release to formaly announce that this module is not supported. Any previous claims otherwise were ade in error
 
 #### Changed
 - Readme changes made.
 
 #### Removed
-- All mentions of this module being supported were removed.
+- All mentions of this module bein supported where removed.
 
 ## Release [1.0.0]
 ### Summary
@@ -33,7 +33,7 @@ This is a major release that **drops Puppet 3 support**
 This is a bugfix release.
 
 #### Fixed
-* Confine provider based on hocon gem
+* Confine provider based on hocon gem 
 * Handle changing value from scalar to array
 * Handle adding array value when array doesn't exist
 
