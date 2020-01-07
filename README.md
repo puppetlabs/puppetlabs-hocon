@@ -4,14 +4,26 @@
 
 #### Table of Contents
 
-1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with the hocon module](#setup)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with hocon](#beginning-with-hocon)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-6. [Development - Guide for contributing to the module](#development)
+
+<!-- vim-markdown-toc GFM -->
+
+* [Overview](#overview)
+* [Module Description](#module-description)
+* [Setup](#setup)
+* [Beginning with hocon](#beginning-with-hocon)
+* [Usage](#usage)
+* [Reference](#reference)
+  * [Type: hocon_setting](#type-hocon_setting)
+    * [Parameters](#parameters)
+      * [`ensure`](#ensure)
+      * [`path`](#path)
+      * [`setting`](#setting)
+      * [`value`](#value)
+      * [`type`](#type)
+* [Development](#development)
+* [Contributors](#contributors)
+
+<!-- vim-markdown-toc -->
 
 ## Overview
 
@@ -31,7 +43,7 @@ To manage a HOCON file, add the resource type `hocon_setting` to a class.
 
 Manage individual settings in HOCON files by adding the `hocon_setting` resource type to a class. For example:
 
-```
+```puppet
 hocon_setting { "sample setting":
   ensure  => present,
   path    => '/tmp/foo.conf',
@@ -43,7 +55,7 @@ hocon_setting { "sample setting":
 To control a setting nested within a map contained at another setting, provide the path to that setting
 under the "setting" parameter, with each level separated by a ".". So to manage `barsetting` in the following map
 
-```
+```puppet
 foo : {
     bar : {
         barsetting : "FOO!"
@@ -53,10 +65,10 @@ foo : {
 
 You would put the following in your manifest:
 
-```
+```puppet
 hocon_setting {'sample nested setting':
   ensure  => present,
-  path => '/tmp/foo.conf',
+  path    => '/tmp/foo.conf',
   setting => 'foo.bar.barsetting',
   value   => 'BAR!',
 }
@@ -64,13 +76,24 @@ hocon_setting {'sample nested setting':
 
 You can also set maps like so:
 
-```
+```puppet
 hocon_setting { 'sample map setting':
-  ensure => present,
-  path => '/tmp/foo.conf',
+  ensure  => present,
+  path    => '/tmp/foo.conf',
   setting => 'hash_setting',
-  value => { 'a' => 'b' },
+  value   => { 'a' => 'b' },
 }
+```
+
+To delete a top level key, you will need to specify both the key name and the
+type of key.
+
+```puppet
+hocon_setting { 'delete top key':
+  ensure  => absent,
+  path    => '/tmp/foo.conf',
+  setting => 'array_key',
+  type    => 'array',
 ```
 
 ## Reference

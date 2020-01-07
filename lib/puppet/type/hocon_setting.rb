@@ -84,8 +84,6 @@ Puppet::Type.newtype(:hocon_setting) do
     end
 
     def insync?(is)
-      # TODO: this doesn't appear to get called, and according to Puppet's source
-      # it may be deprecated.
       if @resource[:type] == 'array_element'
         # make sure all passed values are in the file
         Array(@resource[:value]).each do |v|
@@ -94,6 +92,10 @@ Puppet::Type.newtype(:hocon_setting) do
           end
         end
         true
+      elsif @resource[:type] == 'array'
+        # Works around a bug in Puppet
+        # See: https://tickets.puppetlabs.com/browse/HC-99
+        is == @should
       else
         super
       end
