@@ -113,6 +113,16 @@ test_key_1: [
       )
     end
 
+    it 'deletes an empty array when requested' do
+      resource = Puppet::Type::Hocon_setting.new(common_params.merge(
+                                                   setting: 'test_key_1', ensure: 'absent', type: 'array',
+      ))
+      provider = described_class.new(resource)
+      expect(provider.exists?).to be true
+      provider.destroy
+      validate_file("\n")
+    end
+
     it 'adds an array element even if the target setting does not yet exist' do
       resource = Puppet::Type::Hocon_setting.new(
         common_params.merge(setting: 'test_key_2',
