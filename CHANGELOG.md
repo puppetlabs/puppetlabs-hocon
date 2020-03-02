@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.1.1](https://github.com/puppetlabs/puppetlabs-hocon/tree/v1.1.1) (2020-03-09)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-hocon/compare/v1.1.0...v1.1.1)
+
+### Added
+
+- Add EL8 to metadata.json [\#106](https://github.com/puppetlabs/puppetlabs-hocon/pull/106) ([trevor-vaughan](https://github.com/trevor-vaughan))
+
+### Fixed
+
+- \[HC-99\] Fix to replace an existing array with an empty array [\#105](https://github.com/puppetlabs/puppetlabs-hocon/pull/105) ([trevor-vaughan](https://github.com/trevor-vaughan))
+
 ## [v1.1.0](https://github.com/puppetlabs/puppetlabs-hocon/tree/v1.1.0) (2019-10-29)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-hocon/compare/1.0.1...v1.1.0)
