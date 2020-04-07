@@ -34,7 +34,7 @@ matrix:
       rvm: 2.5.3
       stage: spec
     -
-      before_script: ["bundle exec rake 'litmus:provision_list[travis_deb]'", "bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
+      before_script: ["bundle exec rake 'litmus:provision_list[travis_deb]'", "bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --targets='localhost*'", "bundle exec rake 'litmus:install_agent[puppet5]'", "bundle exec rake litmus:install_module"]
       bundler_args: 
       dist: trusty
       env: PLATFORMS=deb_puppet5
@@ -44,7 +44,7 @@ matrix:
       stage: acceptance
       sudo: required
     -
-      before_script: ["bundle exec rake 'litmus:provision_list[travis_deb]'", "bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'", "bundle exec rake 'litmus:install_agent[puppet6]'", "bundle exec rake litmus:install_module"]
+      before_script: ["bundle exec rake 'litmus:provision_list[travis_deb]'", "bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --targets='localhost*'", "bundle exec rake 'litmus:install_agent[puppet6]'", "bundle exec rake litmus:install_module"]
       bundler_args: 
       dist: trusty
       env: PLATFORM=centos:deb_puppet6
