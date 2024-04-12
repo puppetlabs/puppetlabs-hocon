@@ -1,10 +1,8 @@
 require 'spec_helper_acceptance'
 
-tmpdir = setup_test_directory
-
 describe 'hocon_setting resource' do
   after :all do
-    run_shell("rm #{tmpdir}/*.conf", acceptable_exit_codes: [0, 1, 2])
+    run_shell("rm #{os_tmpdir}/*.conf", acceptable_exit_codes: [0, 1, 2])
   end
 
   shared_examples 'has_content' do |path, pp, content|
@@ -42,13 +40,13 @@ describe 'hocon_setting resource' do
       pp = <<-EOS
       hocon_setting { 'ensure => present for section':
         ensure  => present,
-        path    => "#{tmpdir}/hocon_setting.conf",
+        path    => "#{os_tmpdir}/hocon_setting.conf",
         setting => 'one.two',
         value   => 'three',
       }
       hocon_setting { 'ensure => present for top level':
         ensure  => present,
-        path    => "#{tmpdir}/hocon_setting.conf",
+        path    => "#{os_tmpdir}/hocon_setting.conf",
         setting => 'four',
         value   => 'five',
       }
@@ -58,7 +56,7 @@ describe 'hocon_setting resource' do
         idempotent_apply(pp)
       end
 
-      describe file("#{tmpdir}/hocon_setting.conf") do
+      describe file("#{os_tmpdir}/hocon_setting.conf") do
         it { is_expected.to be_file }
         it("contains one {\n two=three\n}\nfour=five") {
           is_expected.to contain("one {\n    two=three\n}\nfour=five")
@@ -69,16 +67,16 @@ describe 'hocon_setting resource' do
     context '=> absent for key/value' do
       before :all do
         if os[:family] == 'Darwin'
-          run_shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+          run_shell("echo \"one {\n    two=three\n}\nfour=five\" > #{os_tmpdir}/hocon_setting.conf")
         else
-          run_shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+          run_shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{os_tmpdir}/hocon_setting.conf")
         end
       end
 
       pp = <<-EOS
       hocon_setting { 'ensure => absent for key/value':
         ensure  => absent,
-        path    => "#{tmpdir}/hocon_setting.conf",
+        path    => "#{os_tmpdir}/hocon_setting.conf",
         setting => 'one.two',
         value   => 'three',
       }
@@ -88,7 +86,7 @@ describe 'hocon_setting resource' do
         idempotent_apply(pp)
       end
 
-      describe file("#{tmpdir}/hocon_setting.conf") do
+      describe file("#{os_tmpdir}/hocon_setting.conf") do
         it { is_expected.to be_file }
         it { is_expected.to contain('four=five') }
         it { is_expected.not_to contain('two=three') }
@@ -98,19 +96,19 @@ describe 'hocon_setting resource' do
     context '=> absent for top-level settings' do
       before :all do
         if os[:family] == 'Darwin'
-          run_shell("echo \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+          run_shell("echo \"one {\n    two=three\n}\nfour=five\" > #{os_tmpdir}/hocon_setting.conf")
         else
-          run_shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{tmpdir}/hocon_setting.conf")
+          run_shell("echo -e \"one {\n    two=three\n}\nfour=five\" > #{os_tmpdir}/hocon_setting.conf")
         end
       end
       after :all do
-        run_shell("rm #{tmpdir}/hocon_setting.conf", acceptable_exit_codes: [0, 1, 2])
+        run_shell("rm #{os_tmpdir}/hocon_setting.conf", acceptable_exit_codes: [0, 1, 2])
       end
 
       pp = <<-EOS
       hocon_setting { 'ensure => absent for top-level':
         ensure  => absent,
-        path    => "#{tmpdir}/hocon_setting.conf",
+        path    => "#{os_tmpdir}/hocon_setting.conf",
         setting => 'four',
         value   => 'five',
       }
@@ -120,7 +118,7 @@ describe 'hocon_setting resource' do
         idempotent_apply(pp)
       end
 
-      describe file("#{tmpdir}/hocon_setting.conf") do
+      describe file("#{os_tmpdir}/hocon_setting.conf") do
         it { is_expected.to be_file }
         it { is_expected.not_to contain('four=five') }
         it { is_expected.to contain("one {\n    two=three\n}") }
@@ -138,12 +136,12 @@ describe 'hocon_setting resource' do
         pp = <<-EOS
         hocon_setting { "#{parameter_list}":
           ensure  => present,
-          path    => "#{tmpdir}/hocon_setting.conf",
+          path    => "#{os_tmpdir}/hocon_setting.conf",
           #{parameter_list}
         }
         EOS
 
-        it_behaves_like 'has_content', "#{tmpdir}/hocon_setting.conf", pp, content
+        it_behaves_like 'has_content', "#{os_tmpdir}/hocon_setting.conf", pp, content
       end
     end
 
@@ -155,21 +153,21 @@ describe 'hocon_setting resource' do
         pp = <<-EOS
         hocon_setting { "#{parameter_list}_setting":
           ensure  => present,
-          path    => "#{tmpdir}/hocon_setting.conf",
+          path    => "#{os_tmpdir}/hocon_setting.conf",
           #{parameter_list}
         }
         EOS
 
-        it_behaves_like 'has_error', "#{tmpdir}/hocon_setting.conf", pp, error
+        it_behaves_like 'has_error', "#{os_tmpdir}/hocon_setting.conf", pp, error
       end
     end
   end
 
   describe 'path parameter' do
     [
-      "#{tmpdir}/one.conf",
-      "#{tmpdir}/two.conf",
-      "#{tmpdir}/three.conf",
+      "#{os_tmpdir}/one.conf",
+      "#{os_tmpdir}/two.conf",
+      "#{os_tmpdir}/three.conf",
     ].each do |path|
       context "path => #{path}" do
         pp = <<-EOS
@@ -205,14 +203,14 @@ describe 'hocon_setting resource' do
       hocon_setting {'one.two':
         ensure => present,
         value => 'one',
-        path => '#{tmpdir}/one.conf',
+        path => '#{os_tmpdir}/one.conf',
       }
 
       hocon_setting {'one.two2':
         setting => 'one.two',
         ensure => present,
         value => 'two',
-        path => '#{tmpdir}/one.conf',
+        path => '#{os_tmpdir}/one.conf',
       }
       EOS
 
@@ -225,19 +223,19 @@ describe 'hocon_setting resource' do
         setting => 'one.two',
         ensure => present,
         value => 'one',
-        path => '#{tmpdir}/four.conf',
+        path => '#{os_tmpdir}/four.conf',
       }
 
       hocon_setting {'one.two4':
         setting => 'one.two',
         ensure => present,
         value => 'two',
-        path => '#{tmpdir}/five.conf',
+        path => '#{os_tmpdir}/five.conf',
       }
       EOS
 
-      it_behaves_like 'has_content', "#{tmpdir}/four.conf", pp, "one {\n    two=one\n}"
-      it_behaves_like 'has_content', "#{tmpdir}/five.conf", pp, "one {\n    two=two\n}"
+      it_behaves_like 'has_content', "#{os_tmpdir}/four.conf", pp, "one {\n    two=one\n}"
+      it_behaves_like 'has_content', "#{os_tmpdir}/five.conf", pp, "one {\n    two=two\n}"
     end
   end
 end
