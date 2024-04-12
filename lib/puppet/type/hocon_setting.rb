@@ -64,7 +64,7 @@ Puppet::Type.newtype(:hocon_setting) do
         unless value.is_a?(Hash)
           raise "Type specified as 'hash' but was #{value.class}"
         end
-      when 'array_element', nil # rubocop:disable Lint/EmptyWhen
+      when 'array_element', nil
       # Do nothing, we'll figure it out on our own
       else
         raise "Type was specified as #{@resource[:type]}, but should have been one of 'boolean', 'string', 'text', 'number', 'array', or 'hash'"

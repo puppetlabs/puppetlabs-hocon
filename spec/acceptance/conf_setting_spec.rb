@@ -19,9 +19,7 @@ describe 'hocon_setting resource' do
     describe file(path) do
       it { is_expected.to be_file }
       # XXX Solaris 10 doesn't support multi-line grep
-      it("should contain #{content}") {
-        is_expected.to contain(content)
-      }
+      it { is_expected.to contain(content) }
     end
   end
 
