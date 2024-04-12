@@ -724,7 +724,7 @@ EOS
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'number', value: 'abcdefg',
                                         ))
-      }.to raise_error
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'boolean' but value is not" do
@@ -732,7 +732,7 @@ EOS
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'boolean', value: 'abcdefg',
                                         ))
-      }.to raise_error
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'hash' but value is not" do
@@ -740,7 +740,7 @@ EOS
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'hash', value: 'abcdefg',
                                         ))
-      }.to raise_error
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'string' but value is not" do
@@ -748,7 +748,7 @@ EOS
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'string', value: 12,
                                         ))
-      }.to raise_error
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'text' but value is not" do
@@ -756,7 +756,7 @@ EOS
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'text', value: 12,
                                         ))
-      }.to raise_error
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it 'throws when type is a non-valid string' do
@@ -764,7 +764,7 @@ EOS
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'invalid', value: 'abcdefg',
                                         ))
-      }.to raise_error
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it 'is able to handle value false with boolean type specified' do
