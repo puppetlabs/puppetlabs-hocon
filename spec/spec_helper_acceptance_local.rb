@@ -5,29 +5,35 @@ RSpec.configure do |c|
   c.formatter = :documentation
 
   c.before :suite do
-    run_shell('puppet resource package hocon ensure=latest provider=puppet_gem')
-  end
-end
+    include PuppetLitmus
+    extend PuppetLitmus
 
-def setup_test_directory
-  basedir = case os[:family]
-            when 'windows'
-              'c:/hocon_test'
-            else
-              '/tmp/hocon_test'
-            end
-  pp = <<-MANIFEST
-    file { '#{basedir}':
+    pp = <<-MANIFEST
+    package { 'hocon':
+      ensure   => 'latest',
+      provider => 'puppet_gem',
+    }
+    file { '#{os_tmpdir}':
       ensure  => directory,
       force   => true,
       purge   => true,
       recurse => true,
     }
-    file { '#{basedir}/file':
+    file { '#{os_tmpdir}/file':
       content => "file exists\n",
       force   => true,
     }
-  MANIFEST
-  apply_manifest(pp)
-  basedir
+    MANIFEST
+
+    apply_manifest(pp)
+  end
+end
+
+def os_tmpdir
+  case os[:family]
+  when 'windows'
+    'c:/hocon_test'
+  else
+    '/tmp/hocon_test'
+  end
 end

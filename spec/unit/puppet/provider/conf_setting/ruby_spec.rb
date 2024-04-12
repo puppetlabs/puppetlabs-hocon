@@ -54,12 +54,12 @@ test_key_1: [
     it 'adds a new element to the array' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1', value: [{ 'foo' => 'foovalue3' }, { 'bar' => 'barvalue3' }], type: 'array_element',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.create
       validate_file(
-        <<-EOS
+        <<-EOS,
 test_key_1: [
     {
         "bar": "barvalue",
@@ -89,12 +89,12 @@ test_key_1: [
     it 'removes elements from the array' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1', ensure: 'absent', value: { 'foo' => 'foovalue3' }, type: 'array_element',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.destroy
       validate_file(
-        <<-EOS
+        <<-EOS,
 test_key_1: [
     {
         "bar": "barvalue",
@@ -116,7 +116,7 @@ test_key_1: [
     it 'deletes an empty array when requested' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1', ensure: 'absent', type: 'array',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.destroy
@@ -134,7 +134,7 @@ test_key_1: [
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS
+        <<-EOS,
 test_key_1: [
   {
     foo: foovalue
@@ -181,7 +181,7 @@ test_key_2: [
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS
+        <<-EOS,
 test_key_1: [
   {
     foo: foovalue
@@ -224,7 +224,7 @@ test_key_2: [
       provider.create
       expect(provider.exists?).to be true
       validate_file(
-        <<-EOS
+        <<-EOS,
 ennui: [
     "yes"
 ]
@@ -285,12 +285,12 @@ foo: bar
     it 'adds a missing setting to the correct map' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.yahoo', value: 'yippee',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS
+        <<-EOS,
 # This is a comment
 test_key_1: {
 // This is also a comment
@@ -321,12 +321,12 @@ foo: bar
     it 'modifies an existing setting with a different value' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_2.baz', value: 'bazvalue2',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.value = 'bazvalue2'
       validate_file(
-        <<-EOS
+        <<-EOS,
 # This is a comment
 test_key_1: {
 // This is also a comment
@@ -356,14 +356,14 @@ foo: bar
     it 'is able to handle settings with non alphanumbering settings' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_2.url', value: 'http://192.168.0.1:8080',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       expect(provider.value).to eq(['http://192.168.1.1:8080'])
       provider.value = 'http://192.168.0.1:8080'
 
       validate_file(
-        <<-EOS
+        <<-EOS,
 # This is a comment
 test_key_1: {
 // This is also a comment
@@ -393,7 +393,7 @@ foo: bar
     it 'recognizes an existing setting with the specified value' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_2.baz', value: 'bazvalue',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
     end
@@ -401,12 +401,12 @@ foo: bar
     it 'adds a new map if the path contains a non-existent map' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_4.huzzah', value: 'shazaam',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS
+        <<-EOS,
 # This is a comment
 test_key_1: {
 // This is also a comment
@@ -439,7 +439,7 @@ test_key_4: {
     it 'adds a new map if no maps exists' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.setting1', value: 'helloworld', path: emptyfile,
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
@@ -449,7 +449,7 @@ test_key_4: {
     it 'is able to handle variables of boolean type' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: false,
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -459,7 +459,7 @@ test_key_4: {
     it 'is able to handle variables of integer type' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: 12,
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -469,7 +469,7 @@ test_key_4: {
     it 'is able to handle variables of float type' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: 12.24,
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -479,7 +479,7 @@ test_key_4: {
     it 'is able to handle arrays' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: [1, 2, 3, 4],
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -489,7 +489,7 @@ test_key_4: {
     it 'is able to handle maps' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: { 'a' => 1, 'b' => 2 },
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -499,7 +499,7 @@ test_key_4: {
     it 'treats a single-element array as a single value if no value type is specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: [12],
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -509,7 +509,7 @@ test_key_4: {
     it 'treats a single-element array as a single-element array if value_type is specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: [12], type: 'array',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -520,12 +520,12 @@ test_key_4: {
       text = "{\n  # a comment\n  a : b\n}"
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: text, type: 'text',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
       validate_file(
-        <<-EOS
+        <<-EOS,
 # This is a comment
 test_key_1: {
 // This is also a comment
@@ -571,11 +571,11 @@ foo=blah
     it "adds a missing setting if it doesn't exist" do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'bar', value: 'yippee',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
-      validate_file(<<-EOS
+      validate_file(<<-EOS,
 # This is a comment
 foo=blah
 "test_key_1" {
@@ -590,12 +590,12 @@ bar: "yippee"
     it 'modifies an existing setting with a different value' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'foo', value: 'yippee',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       expect(provider.value[0]).to eq('blah')
       provider.value = 'yippee'
-      validate_file(<<-EOS
+      validate_file(<<-EOS,
 # This is a comment
 foo="yippee"
 "test_key_1" {
@@ -609,7 +609,7 @@ foo="yippee"
     it 'recognizes an existing setting with the specified value' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'foo', value: 'blah',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
     end
@@ -627,11 +627,11 @@ foo="yippee"
     it 'is able to add a setting to the top-level map' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'foo', value: 'yippee',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
-      validate_file(<<-EOS
+      validate_file(<<-EOS,
 "test_key_2" {
     foo="http://192.168.1.1:8080"
 }
@@ -664,12 +664,12 @@ EOS
     it 'removes a setting that exists' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.foo', ensure: 'absent',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.destroy
       # rubocop:disable Layout/TrailingWhitespace - Validate fails without trailing whitespace
-      validate_file(<<-EOS
+      validate_file(<<-EOS,
 "test_key_1" {
     # This is also a comment
     
@@ -692,11 +692,11 @@ EOS
     it 'does nothing for a setting that does not exist' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_3.foo', ensure: 'absent',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.destroy
-      validate_file(<<-EOS
+      validate_file(<<-EOS,
 "test_key_1" {
     # This is also a comment
     foo=foovalue
@@ -723,54 +723,54 @@ EOS
       expect {
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'number', value: 'abcdefg',
-        ))
-      }.to raise_error
+                                        ))
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'boolean' but value is not" do
       expect {
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'boolean', value: 'abcdefg',
-        ))
-      }.to raise_error
+                                        ))
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'hash' but value is not" do
       expect {
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'hash', value: 'abcdefg',
-        ))
-      }.to raise_error
+                                        ))
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'string' but value is not" do
       expect {
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'string', value: 12,
-        ))
-      }.to raise_error
+                                        ))
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it "throws when type is 'text' but value is not" do
       expect {
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'text', value: 12,
-        ))
-      }.to raise_error
+                                        ))
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it 'throws when type is a non-valid string' do
       expect {
         Puppet::Type::Hocon_setting.new(common_params.merge(
                                           setting: 'foo', type: 'invalid', value: 'abcdefg',
-        ))
-      }.to raise_error
+                                        ))
+      }.to raise_error(Puppet::ResourceError, %r{Parameter value failed})
     end
 
     it 'is able to handle value false with boolean type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: false, type: 'boolean',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -780,7 +780,7 @@ EOS
     it 'is able to handle value true with boolean type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: true, type: 'boolean',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -790,7 +790,7 @@ EOS
     it 'is able to handle an integer value with number type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: 12, type: 'number',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -800,7 +800,7 @@ EOS
     it 'is able to handle a float value with number type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: 13.37, type: 'number',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -810,7 +810,7 @@ EOS
     it 'is able to handle an Integer string value with number type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: '12', type: 'number',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -820,7 +820,7 @@ EOS
     it 'is able to handle a Float string value with number type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: '13.37', type: 'number',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -830,7 +830,7 @@ EOS
     it 'is able to handle string value with string type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: 'abc', type: 'string',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -840,7 +840,7 @@ EOS
     it 'is able to handle hash value with hash type specified' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'test_key_1.master', value: { 'a' => 'b' }, type: 'hash',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
@@ -862,11 +862,11 @@ sub_key: ${test_key_1.bar}
     it 'can change the value of a setting with a substitution' do
       resource = Puppet::Type::Hocon_setting.new(common_params.merge(
                                                    setting: 'sub_key', ensure: 'present', value: 'newvalue', type: 'string',
-      ))
+                                                 ))
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.value = 'newvalue'
-      validate_file(<<-EOS
+      validate_file(<<-EOS,
 test_key_1:
   {
     bar: barvalue

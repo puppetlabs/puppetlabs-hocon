@@ -128,7 +128,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     conf_file_modified
   end
 
-  def set_value(value_to_set) # rubocop:disable Style/AccessorMethodName
+  def set_value(value_to_set)
     if resource[:type] == 'array_element'
       tmp_val = []
       val = value
