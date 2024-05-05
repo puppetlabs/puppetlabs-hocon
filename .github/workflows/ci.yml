@@ -6,6 +6,11 @@ on:
     branches:
       - 'master'
       - 'main'
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'CODEOWNERS'
+      - 'AUTHORS'
   workflow_dispatch:
 
 jobs:
