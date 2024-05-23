@@ -35,7 +35,6 @@ group :development do
   gem "rubocop-rspec", '= 2.19.0',               require: false
   gem "rb-readline", '= 0.5.5',                  require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "hocon", '~> 1.1',                         require: false
-  gem "github_changelog_generator", '~> 1.15',   require: false if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.3.0')
 end
 group :development, :release_prep do
   gem "puppet-strings", '~> 4.0',         require: false
