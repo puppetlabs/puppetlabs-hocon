@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.type(:hocon_setting).provide(:ruby) do
   confine feature: :hocon
 
@@ -6,18 +8,12 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def exists?
-    unless conf_file.has_value?(setting) # rubocop:disable Style/PreferredHashMethods
-      return false
-    end
+    return false unless conf_file.has_value?(setting) # rubocop:disable Style/PreferredHashMethods
 
     type = @resource[:type]
     conf_value = conf_object.get_value(setting).value
 
-    if type == 'array'
-      unless conf_value.is_a?(Array)
-        return false
-      end
-    end
+    return false if type == 'array' && !conf_value.is_a?(Array)
 
     if type.nil? &&
        conf_value.is_a?(Array) &&
@@ -26,9 +22,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
       return false
     end
 
-    if type == 'array_element'
-      return Array(@resource[:value]).any? { |v| value.flatten.include?(v) }
-    end
+    return Array(@resource[:value]).any? { |v| value.flatten.include?(v) } if type == 'array_element'
 
     true
   end
@@ -90,9 +84,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   private
 
   def conf_file
-    if @conf_file.nil? && !File.exist?(file_path)
-      File.new(file_path, 'w')
-    end
+    File.new(file_path, 'w') if @conf_file.nil? && !File.exist?(file_path)
     @conf_file ||= Hocon::Parser::ConfigDocumentFactory.parse_file(file_path)
   end
 
@@ -104,9 +96,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def conf_object
-    if @conf_file.nil? && !File.exist?(file_path)
-      File.new(file_path, 'w')
-    end
+    File.new(file_path, 'w') if @conf_file.nil? && !File.exist?(file_path)
     Hocon::ConfigFactory.parse_file(file_path).resolve
   end
 
@@ -136,9 +126,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
         tmp_val << v
       end
       Array(value_to_set).each do |v|
-        unless tmp_val.include?(v)
-          tmp_val << v
-        end
+        tmp_val << v unless tmp_val.include?(v)
       end
 
       new_value = Hocon::ConfigValueFactory.from_any_ref(tmp_val, nil)
@@ -150,11 +138,10 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
       new_value = Hocon::ConfigValueFactory.from_any_ref(value_to_set[0], nil)
     end
 
-    conf_file_modified = if resource[:type] == 'text'
-                           conf_file.set_value(setting, new_value)
-                         else
-                           conf_file.set_config_value(setting, new_value)
-                         end
-    conf_file_modified
+    if resource[:type] == 'text'
+      conf_file.set_value(setting, new_value)
+    else
+      conf_file.set_config_value(setting, new_value)
+    end
   end
 end

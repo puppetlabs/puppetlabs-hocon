@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet'
 require 'puppet/type/hocon_setting'
 describe Puppet::Type.type(:hocon_setting) do
@@ -78,7 +80,7 @@ describe Puppet::Type.type(:hocon_setting) do
 
   it 'accepts valid number values as a string' do
     {
-      '13'    => 13,
+      '13' => 13,
       '13.37' => 13.37,
     }.each do |key, val|
       resource[:type]  = 'number'
