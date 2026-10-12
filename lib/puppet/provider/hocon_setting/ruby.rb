@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 Puppet::Type.type(:hocon_setting).provide(:ruby) do
   confine feature: :hocon
 
@@ -7,6 +8,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
     setting.to_s
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def exists?
     return false unless conf_file.has_value?(setting) # rubocop:disable Style/PreferredHashMethods
 
@@ -15,20 +17,16 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
 
     return false if type == 'array' && !conf_value.is_a?(Array)
 
-    if type.nil? &&
-       conf_value.is_a?(Array) &&
-       conf_value.length == 1
-
-      return false
-    end
+    return false if type.nil? && conf_value.is_a?(Array) && conf_value.length == 1
 
     return Array(@resource[:value]).any? { |v| value.flatten.include?(v) } if type == 'array_element'
 
     true
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   def create
-    conf_file_modified = set_value(resource[:value])
+    conf_file_modified = document_with_value(resource[:value])
     write_conf(conf_file_modified)
     @conf_file = nil
   end
@@ -68,7 +66,7 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
   end
 
   def value=(new_value)
-    conf_file_modified = set_value(new_value)
+    conf_file_modified = document_with_value(new_value)
     write_conf(conf_file_modified)
     @conf_file = nil
   end
@@ -102,29 +100,21 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
 
   def remove_value(value_to_remove)
     if resource[:type] == 'array_element'
-      new_value_tmp = []
-      val = value
-      Array(val).each do |v|
-        new_value_tmp << v
-      end
+      new_value_tmp = Array(value).dup
       Array(value_to_remove).each do |v|
         new_value_tmp.delete(v)
       end
       new_value = Hocon::ConfigValueFactory.from_any_ref(new_value_tmp, nil)
-      conf_file_modified = conf_file.set_config_value(setting, new_value)
+      conf_file.set_config_value(setting, new_value)
     else
-      conf_file_modified = conf_file.remove_value(setting)
+      conf_file.remove_value(setting)
     end
-    conf_file_modified
   end
 
-  def set_value(value_to_set)
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+  def document_with_value(value_to_set)
     if resource[:type] == 'array_element'
-      tmp_val = []
-      val = value
-      Array(val).each do |v|
-        tmp_val << v
-      end
+      tmp_val = Array(value).dup
       Array(value_to_set).each do |v|
         tmp_val << v unless tmp_val.include?(v)
       end
@@ -144,4 +134,6 @@ Puppet::Type.type(:hocon_setting).provide(:ruby) do
       conf_file.set_config_value(setting, new_value)
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 end
+# rubocop:enable Metrics/BlockLength

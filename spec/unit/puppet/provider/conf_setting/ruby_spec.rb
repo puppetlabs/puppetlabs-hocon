@@ -27,7 +27,7 @@ describe provider_class do
     File.write(emptyfile, '')
   end
 
-  context 'array_element' do
+  context 'with array_element type' do
     let(:orig_content) do
       <<~HOCON
         test_key_1: [
@@ -663,7 +663,7 @@ describe provider_class do
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.destroy
-      # rubocop:disable Layout/TrailingWhitespace - Validate fails without trailing whitespace
+      # rubocop:disable Layout/TrailingWhitespace
       validate_file(<<~HOCON,
         "test_key_1" {
             # This is also a comment
@@ -799,7 +799,7 @@ describe provider_class do
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0].eql?(13.37)).to be(true)
+      expect(provider.value[0].eql?(13.37)).to be(true) # rubocop:disable Lint/FloatComparison
     end
 
     it 'is able to handle an Integer string value with number type specified' do
@@ -819,7 +819,7 @@ describe provider_class do
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0].eql?(13.37)).to be(true)
+      expect(provider.value[0].eql?(13.37)).to be(true) # rubocop:disable Lint/FloatComparison
     end
 
     it 'is able to handle string value with string type specified' do
@@ -843,7 +843,7 @@ describe provider_class do
     end
   end
 
-  context 'substitutions' do
+  context 'with substitutions' do
     let(:orig_content) do
       <<~HOCON
         test_key_1:

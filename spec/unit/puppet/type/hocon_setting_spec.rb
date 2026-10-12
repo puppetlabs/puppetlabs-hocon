@@ -13,7 +13,7 @@ describe Puppet::Type.type(:hocon_setting) do
     )
   end
 
-  it 'is ensurable' do
+  it 'is ensurable' do # rubocop:disable RSpec/MultipleExpectations
     resource[:ensure] = :present
     expect(resource[:ensure]).to be(:present)
     resource[:ensure] = :absent
@@ -78,7 +78,7 @@ describe Puppet::Type.type(:hocon_setting) do
     end
   end
 
-  it 'accepts valid number values as a string' do
+  it 'accepts valid number values as a string' do # rubocop:disable RSpec/ExampleLength
     {
       '13' => 13,
       '13.37' => 13.37,
