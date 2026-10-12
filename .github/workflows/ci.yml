@@ -28,4 +28,7 @@ jobs:
     secrets: "inherit"
     with:
       runs_on: "ubuntu-26.04"
-      flags: --arch-exclude arm
+      flags: >-
+        --arch-exclude arm
+        --collection-platform-exclude '9:^(Debian-(10|11|12)|Ubuntu-(18\.04|20\.04)|RedHat-7|OracleLinux-7|Scientific-7)$'
+        --collection-platform-exclude '8:^Ubuntu-26\.04$'
