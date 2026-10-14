@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'puppet'
 
@@ -21,34 +23,31 @@ describe provider_class do
   end
 
   before :each do
-    File.open(tmpfile, 'w') do |fh|
-      fh.write(orig_content)
-    end
-    File.open(emptyfile, 'w') do |fh|
-      fh.write('')
-    end
+    File.write(tmpfile, orig_content)
+    File.write(emptyfile, '')
   end
-  context 'array_element' do
+
+  context 'with array_element type' do
     let(:orig_content) do
-      <<-EOS
-test_key_1: [
-  {
-    foo: foovalue
-    bar: barvalue
-    master: true
-  }
-,
-  {
-    foo: foovalue2
-    baz: bazvalue
-    url: "http://192.168.1.1:8080"
-  }
-,
-  {
-    foo: foovalue3
-  }
-]
-      EOS
+      <<~HOCON
+        test_key_1: [
+          {
+            foo: foovalue
+            bar: barvalue
+            master: true
+          }
+        ,
+          {
+            foo: foovalue2
+            baz: bazvalue
+            url: "http://192.168.1.1:8080"
+          }
+        ,
+          {
+            foo: foovalue3
+          }
+        ]
+      HOCON
     end
 
     it 'adds a new element to the array' do
@@ -59,30 +58,30 @@ test_key_1: [
       expect(provider.exists?).to be true
       provider.create
       validate_file(
-        <<-EOS,
-test_key_1: [
-    {
-        "bar": "barvalue",
-        "foo": "foovalue",
-        "master": true
-    }
-,
-    {
-        "baz": "bazvalue",
-        "foo": "foovalue2",
-        "url": "http://192.168.1.1:8080"
-    }
-,
-    {
-        "foo": "foovalue3"
-    }
-,
-    {
-        "bar": "barvalue3"
-    }
+        <<~HOCON,
+          test_key_1: [
+              {
+                  "bar": "barvalue",
+                  "foo": "foovalue",
+                  "master": true
+              }
+          ,
+              {
+                  "baz": "bazvalue",
+                  "foo": "foovalue2",
+                  "url": "http://192.168.1.1:8080"
+              }
+          ,
+              {
+                  "foo": "foovalue3"
+              }
+          ,
+              {
+                  "bar": "barvalue3"
+              }
 
-]
-      EOS
+          ]
+        HOCON
       )
     end
 
@@ -94,22 +93,22 @@ test_key_1: [
       expect(provider.exists?).to be true
       provider.destroy
       validate_file(
-        <<-EOS,
-test_key_1: [
-    {
-        "bar": "barvalue",
-        "foo": "foovalue",
-        "master": true
-    }
-,
-    {
-        "baz": "bazvalue",
-        "foo": "foovalue2",
-        "url": "http://192.168.1.1:8080"
-    }
+        <<~HOCON,
+          test_key_1: [
+              {
+                  "bar": "barvalue",
+                  "foo": "foovalue",
+                  "master": true
+              }
+          ,
+              {
+                  "baz": "bazvalue",
+                  "foo": "foovalue2",
+                  "url": "http://192.168.1.1:8080"
+              }
 
-]
-      EOS
+          ]
+        HOCON
       )
     end
 
@@ -134,36 +133,36 @@ test_key_1: [
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS,
-test_key_1: [
-  {
-    foo: foovalue
-    bar: barvalue
-    master: true
-  }
-,
-  {
-    foo: foovalue2
-    baz: bazvalue
-    url: "http://192.168.1.1:8080"
-  }
-,
-  {
-    foo: foovalue3
-  }
-]
-test_key_2: [
+        <<~HOCON,
+          test_key_1: [
+            {
+              foo: foovalue
+              bar: barvalue
+              master: true
+            }
+          ,
+            {
+              foo: foovalue2
+              baz: bazvalue
+              url: "http://192.168.1.1:8080"
+            }
+          ,
+            {
+              foo: foovalue3
+            }
+          ]
+          test_key_2: [
 
-    {
+              {
 
-        "foo": "foovalue3"
+                  "foo": "foovalue3"
 
-    }
+              }
 
 
 
-]
-      EOS
+          ]
+        HOCON
       )
     end
 
@@ -181,38 +180,36 @@ test_key_2: [
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS,
-test_key_1: [
-  {
-    foo: foovalue
-    bar: barvalue
-    master: true
-  }
-,
-  {
-    foo: foovalue2
-    baz: bazvalue
-    url: "http://192.168.1.1:8080"
-  }
-,
-  {
-    foo: foovalue3
-  }
-]
-test_key_2: [
-    {
-        "foo": "foovalue3"
-    }
+        <<~HOCON,
+          test_key_1: [
+            {
+              foo: foovalue
+              bar: barvalue
+              master: true
+            }
+          ,
+            {
+              foo: foovalue2
+              baz: bazvalue
+              url: "http://192.168.1.1:8080"
+            }
+          ,
+            {
+              foo: foovalue3
+            }
+          ]
+          test_key_2: [
+              {
+                  "foo": "foovalue3"
+              }
 
-]
-      EOS
+          ]
+        HOCON
       )
     end
 
     it 'converts a scalar key to a single element array when type is set' do
-      File.open(tmpfile, 'w') do |fh|
-        fh.write('ennui: yes')
-      end
+      File.write(tmpfile, 'ennui: yes')
       resource = Puppet::Type::Hocon_setting.new(
         common_params.merge(setting: 'ennui',
                             ensure: 'present',
@@ -224,23 +221,21 @@ test_key_2: [
       provider.create
       expect(provider.exists?).to be true
       validate_file(
-        <<-EOS,
-ennui: [
-    "yes"
-]
-EOS
+        <<~HOCON,
+          ennui: [
+              "yes"
+          ]
+        HOCON
       )
     end
 
     it 'converts to a scalar from single element array when type is unset' do
-      content = <<-EOS
-ennui: [
-    "yes"
-]
-EOS
-      File.open(tmpfile, 'w') do |fh|
-        fh.write(content)
-      end
+      content = <<~HOCON
+        ennui: [
+            "yes"
+        ]
+      HOCON
+      File.write(tmpfile, content)
       resource = Puppet::Type::Hocon_setting.new(
         common_params.merge(setting: 'ennui',
                             ensure: 'present',
@@ -256,30 +251,30 @@ EOS
 
   context 'when ensuring that a setting is present' do
     let(:orig_content) do
-      <<-EOS
-# This is a comment
-test_key_1: {
-// This is also a comment
-  foo: foovalue
+      <<~HOCON
+        # This is a comment
+        test_key_1: {
+        // This is also a comment
+          foo: foovalue
 
-  bar: barvalue
-  master: true
-}
+          bar: barvalue
+          master: true
+        }
 
-test_key_2: {
+        test_key_2: {
 
-  foo: foovalue2
-  baz: bazvalue
-  url: "http://192.168.1.1:8080"
-}
+          foo: foovalue2
+          baz: bazvalue
+          url: "http://192.168.1.1:8080"
+        }
 
-"test_key:3": {
-  foo: bar
-}
-    #another comment
-// yet another comment
-foo: bar
-      EOS
+        "test_key:3": {
+          foo: bar
+        }
+            #another comment
+        // yet another comment
+        foo: bar
+      HOCON
     end
 
     it 'adds a missing setting to the correct map' do
@@ -290,31 +285,31 @@ foo: bar
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS,
-# This is a comment
-test_key_1: {
-// This is also a comment
-  foo: foovalue
+        <<~HOCON,
+          # This is a comment
+          test_key_1: {
+          // This is also a comment
+            foo: foovalue
 
-  bar: barvalue
-  master: true
-  yahoo: "yippee"
-}
+            bar: barvalue
+            master: true
+            yahoo: "yippee"
+          }
 
-test_key_2: {
+          test_key_2: {
 
-  foo: foovalue2
-  baz: bazvalue
-  url: "http://192.168.1.1:8080"
-}
+            foo: foovalue2
+            baz: bazvalue
+            url: "http://192.168.1.1:8080"
+          }
 
-"test_key:3": {
-  foo: bar
-}
-    #another comment
-// yet another comment
-foo: bar
-      EOS
+          "test_key:3": {
+            foo: bar
+          }
+              #another comment
+          // yet another comment
+          foo: bar
+        HOCON
       )
     end
 
@@ -326,30 +321,30 @@ foo: bar
       expect(provider.exists?).to be true
       provider.value = 'bazvalue2'
       validate_file(
-        <<-EOS,
-# This is a comment
-test_key_1: {
-// This is also a comment
-  foo: foovalue
+        <<~HOCON,
+          # This is a comment
+          test_key_1: {
+          // This is also a comment
+            foo: foovalue
 
-  bar: barvalue
-  master: true
-}
+            bar: barvalue
+            master: true
+          }
 
-test_key_2: {
+          test_key_2: {
 
-  foo: foovalue2
-  baz: "bazvalue2"
-  url: "http://192.168.1.1:8080"
-}
+            foo: foovalue2
+            baz: "bazvalue2"
+            url: "http://192.168.1.1:8080"
+          }
 
-"test_key:3": {
-  foo: bar
-}
-    #another comment
-// yet another comment
-foo: bar
-      EOS
+          "test_key:3": {
+            foo: bar
+          }
+              #another comment
+          // yet another comment
+          foo: bar
+        HOCON
       )
     end
 
@@ -363,30 +358,30 @@ foo: bar
       provider.value = 'http://192.168.0.1:8080'
 
       validate_file(
-        <<-EOS,
-# This is a comment
-test_key_1: {
-// This is also a comment
-  foo: foovalue
+        <<~HOCON,
+          # This is a comment
+          test_key_1: {
+          // This is also a comment
+            foo: foovalue
 
-  bar: barvalue
-  master: true
-}
+            bar: barvalue
+            master: true
+          }
 
-test_key_2: {
+          test_key_2: {
 
-  foo: foovalue2
-  baz: bazvalue
-  url: "http://192.168.0.1:8080"
-}
+            foo: foovalue2
+            baz: bazvalue
+            url: "http://192.168.0.1:8080"
+          }
 
-"test_key:3": {
-  foo: bar
-}
-    #another comment
-// yet another comment
-foo: bar
-      EOS
+          "test_key:3": {
+            foo: bar
+          }
+              #another comment
+          // yet another comment
+          foo: bar
+        HOCON
       )
     end
 
@@ -406,33 +401,33 @@ foo: bar
       expect(provider.exists?).to be false
       provider.create
       validate_file(
-        <<-EOS,
-# This is a comment
-test_key_1: {
-// This is also a comment
-  foo: foovalue
+        <<~HOCON,
+          # This is a comment
+          test_key_1: {
+          // This is also a comment
+            foo: foovalue
 
-  bar: barvalue
-  master: true
-}
+            bar: barvalue
+            master: true
+          }
 
-test_key_2: {
+          test_key_2: {
 
-  foo: foovalue2
-  baz: bazvalue
-  url: "http://192.168.1.1:8080"
-}
+            foo: foovalue2
+            baz: bazvalue
+            url: "http://192.168.1.1:8080"
+          }
 
-"test_key:3": {
-  foo: bar
-}
-    #another comment
-// yet another comment
-foo: bar
-test_key_4: {
-  huzzah: "shazaam"
-}
-      EOS
+          "test_key:3": {
+            foo: bar
+          }
+              #another comment
+          // yet another comment
+          foo: bar
+          test_key_4: {
+            huzzah: "shazaam"
+          }
+        HOCON
       )
     end
 
@@ -525,47 +520,47 @@ test_key_4: {
       provider.create
       expect(provider.exists?).to be true
       validate_file(
-        <<-EOS,
-# This is a comment
-test_key_1: {
-// This is also a comment
-  foo: foovalue
+        <<~HOCON,
+          # This is a comment
+          test_key_1: {
+          // This is also a comment
+            foo: foovalue
 
-  bar: barvalue
-  master: {
-    # a comment
-    a : b
-  }
-}
+            bar: barvalue
+            master: {
+              # a comment
+              a : b
+            }
+          }
 
-test_key_2: {
+          test_key_2: {
 
-  foo: foovalue2
-  baz: bazvalue
-  url: "http://192.168.1.1:8080"
-}
+            foo: foovalue2
+            baz: bazvalue
+            url: "http://192.168.1.1:8080"
+          }
 
-"test_key:3": {
-  foo: bar
-}
-    #another comment
-// yet another comment
-foo: bar
-      EOS
+          "test_key:3": {
+            foo: bar
+          }
+              #another comment
+          // yet another comment
+          foo: bar
+        HOCON
       )
     end
   end
 
   context 'when dealing with settings in the top level' do
     let(:orig_content) do
-      <<-EOS
-# This is a comment
-foo=blah
-"test_key_1" {
-    # yet another comment
-    foo="http://192.168.1.1:8080"
-}
-      EOS
+      <<~HOCON
+        # This is a comment
+        foo=blah
+        "test_key_1" {
+            # yet another comment
+            foo="http://192.168.1.1:8080"
+        }
+      HOCON
     end
 
     it "adds a missing setting if it doesn't exist" do
@@ -575,15 +570,15 @@ foo=blah
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
-      validate_file(<<-EOS,
-# This is a comment
-foo=blah
-"test_key_1" {
-    # yet another comment
-    foo="http://192.168.1.1:8080"
-}
-bar: "yippee"
-      EOS
+      validate_file(<<~HOCON,
+        # This is a comment
+        foo=blah
+        "test_key_1" {
+            # yet another comment
+            foo="http://192.168.1.1:8080"
+        }
+        bar: "yippee"
+      HOCON
                    )
     end
 
@@ -595,14 +590,14 @@ bar: "yippee"
       expect(provider.exists?).to be true
       expect(provider.value[0]).to eq('blah')
       provider.value = 'yippee'
-      validate_file(<<-EOS,
-# This is a comment
-foo="yippee"
-"test_key_1" {
-    # yet another comment
-    foo="http://192.168.1.1:8080"
-}
-      EOS
+      validate_file(<<~HOCON,
+        # This is a comment
+        foo="yippee"
+        "test_key_1" {
+            # yet another comment
+            foo="http://192.168.1.1:8080"
+        }
+      HOCON
                    )
     end
 
@@ -617,11 +612,11 @@ foo="yippee"
 
   context 'when the first line of the file is a section' do
     let(:orig_content) do
-      <<-EOS
-"test_key_2" {
-    foo="http://192.168.1.1:8080"
-}
-      EOS
+      <<~HOCON
+        "test_key_2" {
+            foo="http://192.168.1.1:8080"
+        }
+      HOCON
     end
 
     it 'is able to add a setting to the top-level map' do
@@ -631,34 +626,34 @@ foo="yippee"
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.create
-      validate_file(<<-EOS,
-"test_key_2" {
-    foo="http://192.168.1.1:8080"
-}
-foo: "yippee"
-      EOS
+      validate_file(<<~HOCON,
+        "test_key_2" {
+            foo="http://192.168.1.1:8080"
+        }
+        foo: "yippee"
+      HOCON
                    )
     end
   end
 
   context 'when ensuring that a setting is absent' do
     let(:orig_content) do
-      <<-EOS
-"test_key_1" {
-    # This is also a comment
-    foo=foovalue
-    bar=barvalue
-    master=true
-}
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue
-    url="http://192.168.1.1:8080"
-}
-"test_key_3" {
-    subby=bar
-}
-EOS
+      <<~HOCON
+        "test_key_1" {
+            # This is also a comment
+            foo=foovalue
+            bar=barvalue
+            master=true
+        }
+        "test_key_2" {
+            foo=foovalue2
+            baz=bazvalue
+            url="http://192.168.1.1:8080"
+        }
+        "test_key_3" {
+            subby=bar
+        }
+      HOCON
     end
 
     it 'removes a setting that exists' do
@@ -668,23 +663,23 @@ EOS
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.destroy
-      # rubocop:disable Layout/TrailingWhitespace - Validate fails without trailing whitespace
-      validate_file(<<-EOS,
-"test_key_1" {
-    # This is also a comment
-    
-    bar=barvalue
-    master=true
-}
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue
-    url="http://192.168.1.1:8080"
-}
-"test_key_3" {
-    subby=bar
-}
-      EOS
+      # rubocop:disable Layout/TrailingWhitespace
+      validate_file(<<~HOCON,
+        "test_key_1" {
+            # This is also a comment
+            
+            bar=barvalue
+            master=true
+        }
+        "test_key_2" {
+            foo=foovalue2
+            baz=bazvalue
+            url="http://192.168.1.1:8080"
+        }
+        "test_key_3" {
+            subby=bar
+        }
+      HOCON
                    )
     end
     # rubocop:enable Layout/TrailingWhitespace
@@ -696,22 +691,22 @@ EOS
       provider = described_class.new(resource)
       expect(provider.exists?).to be false
       provider.destroy
-      validate_file(<<-EOS,
-"test_key_1" {
-    # This is also a comment
-    foo=foovalue
-    bar=barvalue
-    master=true
-}
-"test_key_2" {
-    foo=foovalue2
-    baz=bazvalue
-    url="http://192.168.1.1:8080"
-}
-"test_key_3" {
-    subby=bar
-}
-      EOS
+      validate_file(<<~HOCON,
+        "test_key_1" {
+            # This is also a comment
+            foo=foovalue
+            bar=barvalue
+            master=true
+        }
+        "test_key_2" {
+            foo=foovalue2
+            baz=bazvalue
+            url="http://192.168.1.1:8080"
+        }
+        "test_key_3" {
+            subby=bar
+        }
+      HOCON
                    )
     end
   end
@@ -804,7 +799,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0].eql?(13.37)).to be(true)
+      expect(provider.value[0].eql?(13.37)).to be(true) # rubocop:disable Lint/FloatComparison
     end
 
     it 'is able to handle an Integer string value with number type specified' do
@@ -824,7 +819,7 @@ EOS
       provider = described_class.new(resource)
       provider.create
       expect(provider.exists?).to be true
-      expect(provider.value[0].eql?(13.37)).to be(true)
+      expect(provider.value[0].eql?(13.37)).to be(true) # rubocop:disable Lint/FloatComparison
     end
 
     it 'is able to handle string value with string type specified' do
@@ -848,15 +843,15 @@ EOS
     end
   end
 
-  context 'substitutions' do
+  context 'with substitutions' do
     let(:orig_content) do
-      <<-EOS
-test_key_1:
-  {
-    bar: barvalue
-  }
-sub_key: ${test_key_1.bar}
-      EOS
+      <<~HOCON
+        test_key_1:
+          {
+            bar: barvalue
+          }
+        sub_key: ${test_key_1.bar}
+      HOCON
     end
 
     it 'can change the value of a setting with a substitution' do
@@ -866,13 +861,13 @@ sub_key: ${test_key_1.bar}
       provider = described_class.new(resource)
       expect(provider.exists?).to be true
       provider.value = 'newvalue'
-      validate_file(<<-EOS,
-test_key_1:
-  {
-    bar: barvalue
-  }
-sub_key: "newvalue"
-      EOS
+      validate_file(<<~HOCON,
+        test_key_1:
+          {
+            bar: barvalue
+          }
+        sub_key: "newvalue"
+      HOCON
                    )
     end
   end
