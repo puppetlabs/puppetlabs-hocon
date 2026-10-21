@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v2.0.0](https://github.com/puppetlabs/puppetlabs-hocon/tree/v2.0.0) - 2024-05-05
+## [v3.0.0](https://github.com/puppetlabs/puppetlabs-hocon/tree/v3.0.0) - 2026-10-21
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-hocon/compare/v2.0.0...v3.0.0)
+
+### Changed
+
+- (maint) update module for Puppet 9 and PDK 4.0 [#126](https://github.com/puppetlabs/puppetlabs-hocon/pull/126) ([zaben903](https://github.com/zaben903))
+
+### Other
+
+- Revert "(ITHELP-87329) - replace pull_request_target with pull_request" [#123](https://github.com/puppetlabs/puppetlabs-hocon/pull/123) ([binford2k](https://github.com/binford2k))
+- (ITHELP-87329) - replace pull_request_target with pull_request [#122](https://github.com/puppetlabs/puppetlabs-hocon/pull/122) ([amitkarsale](https://github.com/amitkarsale))
+
+## [v2.0.0](https://github.com/puppetlabs/puppetlabs-hocon/tree/v2.0.0) - 2024-05-04
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-hocon/compare/v1.1.0...v2.0.0)
 
